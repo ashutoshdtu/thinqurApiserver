@@ -29,6 +29,8 @@ tmp/
 local.properties
 .settings/
 .loadpath
+nbproject/
+build.xml
 
 # External tool builders
 .externalToolBuilders/
@@ -165,7 +167,8 @@ release.properties
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -318,3 +321,4 @@ xcuserdata
 *.moved-aside
 DerivedData
 *.xcuserstate
+/nbproject/private/
