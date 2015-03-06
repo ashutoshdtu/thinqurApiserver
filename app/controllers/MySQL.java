@@ -22,7 +22,7 @@ public class MySQL extends Controller {
 	private static Statement statement = null;
 	private static ResultSet resultSet = null;
 	private static String host = Play.application().configuration()
-			.getString("mysql.host");
+			.getString("mysql.url");
 	private static String username = Play.application().configuration()
 			.getString("mysql.username");
 	private static String password = Play.application().configuration()
@@ -35,8 +35,9 @@ public class MySQL extends Controller {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
-			String url = "jdbc:mysql://" + host + "/" + database; 
-			connect = DriverManager.getConnection(url, username, password);
+	
+		connect = DriverManager.getConnection(host + "/" + database 
+            		+ "?" + "user=" + username + "&password=" + password);	
 
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();
