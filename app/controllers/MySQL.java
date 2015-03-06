@@ -35,9 +35,8 @@ public class MySQL extends Controller {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
-			connect = DriverManager.getConnection("jdbc:mysql://" + host + "/"
-					+ database + "?" + "user=" + username + "&password="
-					+ password);
+			String url = "jdbc:mysql://" + host + "/" + database; 
+			connect = DriverManager.getConnection(url, username, password);
 
 			// Statements allow to issue SQL queries to the database
 			statement = connect.createStatement();

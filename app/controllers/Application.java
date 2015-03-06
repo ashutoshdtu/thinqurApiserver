@@ -17,7 +17,7 @@ public class Application extends Controller {
 	}
 
 	public static Result output() throws JSONException {
-		String query = "select * from categories";
+		String query = "select category from categories";
 		ResultSet data;
 		JSONArray json = new JSONArray();
 		JSONObject result = new JSONObject();
