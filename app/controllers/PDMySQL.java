@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import play.Play;
 import play.mvc.*;
 
-public class MySQL extends Controller {
+public class PDMySQL extends Controller {
 
 	private static Connection connect = null;
 	private static Statement statement = null;
@@ -35,12 +35,14 @@ public class MySQL extends Controller {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
 			// Setup the connection with the DB
-	
-		connect = DriverManager.getConnection(host + "/" + database 
+			if (connect == null) {
+			connect = DriverManager.getConnection(host + "/" + database 
             		+ "?" + "user=" + username + "&password=" + password);	
-
+			}
 			// Statements allow to issue SQL queries to the database
+			if (statement == null) {
 			statement = connect.createStatement();
+			}
 			// Result set get the result of the SQL query
 			resultSet = statement.executeQuery(query);
 

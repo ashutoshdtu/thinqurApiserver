@@ -3,23 +3,9 @@ package controllers;
 import java.sql.ResultSet;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Json {
-	public static JSONObject jsonStatus(JSONObject object, JSONArray array,
-			String status, Exception e) throws JSONException {
-		if (status == "error") {
-			object.put("code", 2);
-			object.put("message", e);
-		} else {
-			object.put("code", 0);
-			object.put("message", "Working awesome");
-		}
-		object.put("result", array);
-		return object;
-	}
-
+public class PDJsonUtil {
 	/**
 	 * Convert a result set into a JSON Array
 	 * 

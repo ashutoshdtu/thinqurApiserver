@@ -13,28 +13,28 @@ import views.html.*;
 public class Application extends Controller {
 
 	public static Result index() {
-		return ok(index.render("Babaji ka Thullu is ready."));
+		return ok("Babaji ka Thullu is ready.");
 	}
 
 	public static Result output() throws JSONException {
-		String query = "select category from categories";
-		ResultSet data;
-		JSONArray json = new JSONArray();
+		String query = "select hex(id) AS `id`, category from categories";
+		ResultSet queryResult;
+		JSONArray categoryResult = new JSONArray();
 		JSONObject result = new JSONObject();
 		JSONObject status = new JSONObject();
 		String s = null;
 		try {
-			data = MySQL.readDataBase(query);
-			json = Json.convertToJSON(data);
+			queryResult = PDMySQL.readDataBase(query);
+			categoryResult = PDJsonUtil.convertToJSON(queryResult);
 			status.put("code", 0);
 			status.put("message", "Awesome");
-			MySQL.close();
+			PDMySQL.close();
 		} catch (Exception e) {
 			status.put("code", 2);
 			status.put("message", e);
 		}
 		result.put("status", status);
-		result.put("categories", json);
+		result.put("categories", categoryResult);
 		s = result.toString();
 		return ok(s);
 	}
