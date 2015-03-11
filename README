@@ -1,4 +1,31 @@
-This is your new Play application
+APISERVER
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
+This is the apiserver codebase for vote-me.
+
+# API Details: # 
+
+
+Types of API's: 
+1) Questions API
+/question/add                  to add question to database
+
+2) Users API
+
+
+
+Per api details: 
+
+1) /question/add
+eg: http://52.11.12.87:9000/question/add?userid=-1&question=Which%20is%20better?&questiontype=objective&tags=startup,technology&options=Uber,Lyft&isAnonymous=true
+
+parameters:
+
+userid                 (string)      id of user who asked question (default = -1, meaning admin) [OPTIONAL]
+question             (string)      question [COMPULSORY] 
+description         (string)      question description [OPTIONAL]
+questiontype      (string)      question-type (default = mcsc, meaning multiple choice single correct )[OPTIONAL]
+isAnonymous     (boolean)  if question is anonymous (default = false)
+tags                    (string)      comma separated list of tags (no space after comma, see eg) [OPTIONAL]
+options               (string)      comma separated list of options (possible answers) (no space after comma, see eg) [OPTIONAL]
+internal               (string)      for later
