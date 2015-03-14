@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 
 import models.QuestionAddEntityManager;
+import models.QuestionReadEntityManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,8 +27,8 @@ public class Question extends Controller {
 	static String description;		// Question description
 	static String questionType; 	// question type 
 	static boolean isAnonymous; 	// whether to show question as anonymous
-	static String[] tags; 			// question tags
-	static String[] options; 		// options of question
+	private static String[] tags; 			// question tags
+	private static String[] options; 		// options of question
 	static String createdAtTimeMilli; // time of creation in milli secs (epoch time)
 	static String lastUpdatedAtTimeMilli; // time of last update in milli secs (epoch time)
 	List<Question> history;
@@ -47,7 +48,7 @@ public class Question extends Controller {
 		Question.createdAtTimeMilli = null;
 		Question.lastUpdatedAtTimeMilli = null;
 		this.history = null;
-		uid = UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d");
+		String id = "54edf0f1158143c4afcc298bc6f6b14e";
 	}
 
 	public static class QuestionForm {
@@ -73,11 +74,67 @@ public class Question extends Controller {
 				//return notFound();
 			} else {
 				QuestionForm newQuestion = form.get();
-				questionID = generateQuestionID();
+				questionID = Utilities.generateUUID();
 				if(mapQuestionFormToQuestion(newQuestion)) {
 					Logger.info("Adding Question <questionID: "+ questionID + "> to DB...");
 					QuestionAddEntityManager que= new QuestionAddEntityManager(); 
 					que.addQuestion();
+					success = 1;
+					statusMessage = "Question added successfully";					
+				} else {
+					Logger.warn("Invalid question!!! Cannot add to DB");
+					success = 0;
+					statusMessage = "Invalid question!!! Cannot add to DB";
+				}
+			}
+		} catch (Exception e) {
+			success = 0;
+			statusMessage = e.toString() ;
+		}
+		JSONObject debugInfo = new JSONObject();
+		JSONObject result = new JSONObject();
+		try {
+			if(success==1) {
+				result.put("status",  "ok");
+				debugInfo.put("code", 1);
+				debugInfo.put("message", statusMessage);
+				debugInfo.put("questionID", questionID);
+				debugInfo.put("Question", question);
+				debugInfo.put("Options", options);
+			}
+			else {
+				result.put("status",  "failed");
+				debugInfo.put("code", 0);
+				debugInfo.put("message", statusMessage);
+			}
+			result.put("debugInfo", debugInfo);
+		} catch (JSONException e) {
+			Logger.warn("JSON exception!!!");
+			e.printStackTrace();
+			if(success==1) 
+				return ok("{\"status\":\"ok\",\"debugInfo\":{\"message\":\"Question added successfully. JSON Exception occured\"}}");
+			else 
+				return ok("{\"status\":\"failed\",\"debugInfo\":{\"message\":\"Question not added. JSON Exception occured\"}}");
+		}
+		return ok(result.toString());
+	}
+	
+	public static Result readQuestion() {
+		int success = 0;
+		String statusMessage;
+		try {
+			Form<QuestionForm> form = form(QuestionForm.class).bindFromRequest();
+			if (form.hasErrors()) {
+				success = 0;
+				statusMessage = "Error in form!!! Cannot add question";
+				//return notFound();
+			} else {
+				QuestionForm newQuestion = form.get();
+				questionID = Utilities.generateUUID();
+				if(mapQuestionFormToQuestion(newQuestion)) {
+					Logger.info("Adding Question <questionID: "+ questionID + "> to DB...");
+					QuestionReadEntityManager que= new QuestionReadEntityManager(); 
+					//que.Question();
 					success = 1;
 					statusMessage = "Question added successfully";					
 				} else {
@@ -124,9 +181,6 @@ public class Question extends Controller {
 			options = que.options != null ? que.options.split(",") : null;
 			tags = que.tags != null ? que.tags.split(",") : null;
 			isAnonymous = que.isAnonymous;
-			Long millis = System.currentTimeMillis();
-			createdAtTimeMilli = millis.toString();
-			lastUpdatedAtTimeMilli = millis.toString();
 			if(isValidQuestion()) {
 				return true;
 			}
@@ -144,17 +198,6 @@ public class Question extends Controller {
 			valid = false;
 		}
 		return valid;
-	}
-
-	private static String generateQuestionID() {
-		String qid;
-		try{
-			qid = UUID.randomUUID().toString().replaceAll("-", "");;
-		} catch(Exception e) {
-			Logger.error(e.toString());
-			return null;
-		}
-		return qid;
 	}
 	
 	public static String getQuestionID() {
@@ -195,6 +238,22 @@ public class Question extends Controller {
 
 	public static void setAnonymous(boolean isAnonymous) {
 		Question.isAnonymous = isAnonymous;
+	}
+
+	public static String[] getTags() {
+		return tags;
+	}
+
+	public static void setTags(String[] tags) {
+		Question.tags = tags;
+	}
+
+	public static String[] getOptions() {
+		return options;
+	}
+
+	public static void setOptions(String[] options) {
+		Question.options = options;
 	}
 
 }

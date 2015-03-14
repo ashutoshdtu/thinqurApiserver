@@ -7,15 +7,16 @@ import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 import controllers.Question;
 
-public class QuestionAddMapper implements ResultSetMapper<Question> {
+public class QuestionReadMapper implements ResultSetMapper<Question> {
 
 	@Override
 	public Question map(int index, ResultSet r, StatementContext ctx)
 			throws SQLException {
 
 		Question que = new Question();
-		// que.date=r.getDate("date");
-		// que.status=r.getString("status");
+		Question.setQuestionID(r.getString("id"));
+		Question.setQuestion(r.getString("question"));
+		Question.setDescription(r.getString("description"));
 		return que;
 	}
 
