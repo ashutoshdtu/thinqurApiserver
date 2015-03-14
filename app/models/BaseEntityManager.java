@@ -3,6 +3,8 @@ package models;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
+import play.Play;
+
 public final class BaseEntityManager {
 
     private BaseEntityManager() {
@@ -27,8 +29,11 @@ public final class BaseEntityManager {
         }
     }
     
-    public static Handle getDBIh() throws ClassNotFoundException {        
-        dbi = new DBI("jdbc:mysql://localhost/vote","root","sk");
+    public static Handle getDBIh() throws ClassNotFoundException { 
+    	String url = Play.application().configuration().getString("db.default.url");
+    	String dbUsername = Play.application().configuration().getString("db.default.user");
+    	String dbPassword = Play.application().configuration().getString("db.default.password");
+        dbi = new DBI(url, dbUsername, dbPassword);
         if ( h == null) {
         	h = dbi.open();
         }
