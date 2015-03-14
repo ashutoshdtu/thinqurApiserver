@@ -34,9 +34,7 @@ public final class BaseEntityManager {
     	String dbUsername = Play.application().configuration().getString("db.default.user");
     	String dbPassword = Play.application().configuration().getString("db.default.password");
         dbi = new DBI(url, dbUsername, dbPassword);
-        if ( h == null) {
-        	h = dbi.open();
-        }
+        h = dbi.open();
         return h;
     }
 }
