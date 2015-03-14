@@ -3,6 +3,10 @@ package controllers;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
+
+import models.QuestionAddEntityManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,6 +61,7 @@ public class Question extends Controller {
         public String internal;
 	}
 	
+	@SuppressWarnings("static-access")
 	public static Result addQuestion() {
 		int success = 0;
 		String statusMessage;
@@ -71,9 +76,10 @@ public class Question extends Controller {
 				questionID = generateQuestionID();
 				if(mapQuestionFormToQuestion(newQuestion)) {
 					Logger.info("Adding Question <questionID: "+ questionID + "> to DB...");
-					addQuestionToDB();
+					QuestionAddEntityManager que= new QuestionAddEntityManager(); 
+					que.addQuestion();
 					success = 1;
-					statusMessage = "Question added successfully";
+					statusMessage = "Question added successfully";					
 				} else {
 					Logger.warn("Invalid question!!! Cannot add to DB");
 					success = 0;
@@ -82,7 +88,7 @@ public class Question extends Controller {
 			}
 		} catch (Exception e) {
 			success = 0;
-			statusMessage = "Exception occured!!! Question not added" ;
+			statusMessage = e.toString() ;
 		}
 		JSONObject debugInfo = new JSONObject();
 		JSONObject result = new JSONObject();
@@ -110,11 +116,6 @@ public class Question extends Controller {
 		return ok(result.toString());
 	}
 
-	private static void addQuestionToDB() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private static boolean mapQuestionFormToQuestion(QuestionForm que) {
 		try {
 			userID = que.userid != null ? que.userid : "-1";
@@ -130,7 +131,7 @@ public class Question extends Controller {
 				return true;
 			}
 		} catch(Exception e) {
-			Logger.error("Something weird happened!!! Check stacktrace");
+			Logger.error(e.toString());
 		}
 		return false;
 	}
@@ -148,11 +149,52 @@ public class Question extends Controller {
 	private static String generateQuestionID() {
 		String qid;
 		try{
-			qid = UUID.randomUUID().toString();
+			qid = UUID.randomUUID().toString().replaceAll("-", "");;
 		} catch(Exception e) {
+			Logger.error(e.toString());
 			return null;
 		}
 		return qid;
+	}
+	
+	public static String getQuestionID() {
+		return questionID;
+	}
+
+	public static void setQuestionID(String questionID) {
+		Question.questionID = questionID;
+	}	
+
+	public static String getUserID() {
+		return userID;
+	}
+
+	public static void setUserID(String userID) {
+		Question.userID = userID;
+	}
+
+	public static String getQuestion() {
+		return question;
+	}
+
+	public static void setQuestion(String question) {
+		Question.question = question;
+	}
+
+	public static String getDescription() {
+		return description;
+	}
+
+	public static void setDescription(String description) {
+		Question.description = description;
+	}
+
+	public static boolean isAnonymous() {
+		return isAnonymous;
+	}
+
+	public static void setAnonymous(boolean isAnonymous) {
+		Question.isAnonymous = isAnonymous;
 	}
 
 }

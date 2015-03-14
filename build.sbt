@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-entitymanager" % "3.6.9.Final",
   "org.hibernate" % "hibernate-core" % "3.5.6-Final",
   "org.hibernate" % "hibernate-annotations" % "3.5.6-Final",
-  "joda-time" % "joda-time-hibernate" % "1.3"
+  "joda-time" % "joda-time-hibernate" % "1.3",
+  "org.jdbi" % "jdbi" % "2.59"
 )     
 
 play.Project.playJavaSettings
