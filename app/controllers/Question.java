@@ -100,7 +100,6 @@ public class Question extends Controller {
 				debugInfo.put("message", statusMessage);
 				debugInfo.put("questionID", questionID);
 				debugInfo.put("Question", question);
-				debugInfo.put("Options", options);
 			}
 			else {
 				result.put("status",  "failed");
@@ -117,61 +116,7 @@ public class Question extends Controller {
 				return ok("{\"status\":\"failed\",\"debugInfo\":{\"message\":\"Question not added. JSON Exception occured\"}}");
 		}
 		return ok(result.toString());
-	}
-	
-	public static Result readQuestion() {
-		int success = 0;
-		String statusMessage;
-		try {
-			Form<QuestionForm> form = form(QuestionForm.class).bindFromRequest();
-			if (form.hasErrors()) {
-				success = 0;
-				statusMessage = "Error in form!!! Cannot add question";
-				//return notFound();
-			} else {
-				QuestionForm newQuestion = form.get();
-				questionID = Utilities.generateUUID();
-				if(mapQuestionFormToQuestion(newQuestion)) {
-					Logger.info("Adding Question <questionID: "+ questionID + "> to DB...");
-					QuestionReadEntityManager que= new QuestionReadEntityManager(); 
-					//que.Question();
-					success = 1;
-					statusMessage = "Question added successfully";					
-				} else {
-					Logger.warn("Invalid question!!! Cannot add to DB");
-					success = 0;
-					statusMessage = "Invalid question!!! Cannot add to DB";
-				}
-			}
-		} catch (Exception e) {
-			success = 0;
-			statusMessage = e.toString() ;
-		}
-		JSONObject debugInfo = new JSONObject();
-		JSONObject result = new JSONObject();
-		try {
-			if(success==1) {
-				result.put("status",  "ok");
-				debugInfo.put("code", 1);
-				debugInfo.put("message", statusMessage);
-				debugInfo.put("questionID", questionID);
-			}
-			else {
-				result.put("status",  "failed");
-				debugInfo.put("code", 0);
-				debugInfo.put("message", statusMessage);
-			}
-			result.put("debugInfo", debugInfo);
-		} catch (JSONException e) {
-			Logger.warn("JSON exception!!!");
-			e.printStackTrace();
-			if(success==1) 
-				return ok("{\"status\":\"ok\",\"debugInfo\":{\"message\":\"Question added successfully. JSON Exception occured\"}}");
-			else 
-				return ok("{\"status\":\"failed\",\"debugInfo\":{\"message\":\"Question not added. JSON Exception occured\"}}");
-		}
-		return ok(result.toString());
-	}
+	}	
 
 	private static boolean mapQuestionFormToQuestion(QuestionForm que) {
 		try {
