@@ -1,12 +1,11 @@
 package controllers;
 
+import static play.data.Form.form;
+
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-
-import models.QuestionAddEntityManager;
-import models.QuestionReadEntityManager;
+import models.QuestionEntityManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +14,6 @@ import play.Logger;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import static play.data.Form.*;
 
 
 
@@ -77,8 +75,8 @@ public class Question extends Controller {
 				questionID = Utilities.generateUUID();
 				if(mapQuestionFormToQuestion(newQuestion)) {
 					Logger.info("Adding Question <questionID: "+ questionID + "> to DB...");
-					QuestionAddEntityManager que= new QuestionAddEntityManager(); 
-					que.addQuestion();
+					QuestionEntityManager que= new QuestionEntityManager(); 
+					que.AddQuestion();
 					success = 1;
 					statusMessage = "Question added successfully";					
 				} else {

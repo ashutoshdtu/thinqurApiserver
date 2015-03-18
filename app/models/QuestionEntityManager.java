@@ -5,8 +5,8 @@ import org.skife.jdbi.v2.Handle;
 import controllers.Question;
 import controllers.Utilities;
 
-public class QuestionAddEntityManager {
-	public static void addQuestion() throws ClassNotFoundException {
+public class QuestionEntityManager {
+	public static void AddQuestion() throws ClassNotFoundException {
 		Handle h = BaseEntityManager.getDBIh();
 		QuestionDao dao;
 		dao = h.attach(QuestionDao.class);
@@ -19,6 +19,16 @@ public class QuestionAddEntityManager {
 		for(String option: Question.getOptions()) {
 			dao.addAnswers(Utilities.generateUUID(), Question.getQuestionID(), option);
 		}
+		h.commit();
+		h.close();
+	}
+	
+	public static void ReadQuestion(String questionID) throws ClassNotFoundException {
+		Handle h = BaseEntityManager.getDBIh();
+		QuestionDao dao;
+		dao = h.attach(QuestionDao.class);
+		h.begin();
+		dao.readQuestion(questionID);
 		h.commit();
 		h.close();
 	}
