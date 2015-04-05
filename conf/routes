@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+
+# Question API v1
+
+# get a Question
+GET     /v1/questions/:id 			controllers.Questions.getQuestionById(id: String)
+# get from Questions collection
+GET 	/v1/questions/ 				controllers.Questions.getQuestions()
+
+# post into Questions collection
+POST 	/v1/questions/ 				controllers.Questions.postQuestion()
