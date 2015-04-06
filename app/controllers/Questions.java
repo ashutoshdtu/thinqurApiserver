@@ -132,7 +132,6 @@ public class Questions extends Controller {
 		HTTPStatus status = new HTTPStatus();
 		String metadata = null;
 		String debugInfo = null;
-		DBCursor cursor = null;
 		List<DBObject> questions = null;
 		DBObject dbObjQuery = null;
 		int resultCount = 0;
@@ -157,7 +156,7 @@ public class Questions extends Controller {
 					dbObjQuery = (DBObject) JSON.parse(q);
 					resultCount = dbCollection.find(dbObjQuery).count();
 					questions = dbCollection.find(dbObjQuery).skip(start).limit(limit).toArray();
-					 status.setDeveloperMessage("Query executed successfully.");
+					status.setDeveloperMessage("Query executed successfully.");
 				} catch (Exception e) {
 					status.setCode(HTTPStatusCode.NOT_FOUND);
 					status.setDeveloperMessage("Question not found. \n"
@@ -166,10 +165,6 @@ public class Questions extends Controller {
 							+ "If all seems ok, notify the fucking developers."
 							+ e.toString());
 					e.printStackTrace();
-				} finally {
-					if (cursor != null) {
-						cursor.close();
-					}
 				}
 			} else {
 				status.setCode(HTTPStatusCode.BAD_REQUEST);
