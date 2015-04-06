@@ -45,6 +45,8 @@ public class Question {
 	@Id
 	public ObjectId id = new ObjectId();
 	
+	public String idString = id.toString();
+	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
 	public boolean isAnonymous;

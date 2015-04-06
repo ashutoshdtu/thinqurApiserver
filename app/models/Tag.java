@@ -15,10 +15,11 @@ import play.data.validation.Constraints.MaxLength;
  *
  */
 
-@Entity
+@Embedded
 public class Tag {
-	
 	public ObjectId id;
+	
+	public String idString = id.toString();
 	
 	@MaxLength(200)
 	String name;

@@ -24,8 +24,8 @@ import play.data.validation.Constraints.Required;
 public class Answer {
 	
 	@Id
-	public ObjectId id = new ObjectId();
-	
+	public ObjectId id = new ObjectId();	
+	public String idString = id.toString();	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
 	
