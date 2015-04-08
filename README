@@ -2,3 +2,24 @@ This is your new Play application
 =================================
 
 This file will be packaged with your application, when using `activator dist`.
+
+Generic API :
+	##Parameters##  
+Method - Basic or Generic 
+q -  Contains the query to be executed (Required)
+Start - Records to skip from start
+Limit - Limit no. of records
+Sort - Sort query to sort the records 
+
+Examples of Some API :
+
+Generic Question API :
+/v1/questions?method=generic&start=1&q={%22isAnonymous%22:false}&sort={%22createdAt%22:-1}
+
+Feeds API : 
+/v1/questions?method=generic&limit=10&q={%22isAnonymous%22:false}&sort={%22createdAt%22:-1}
+
+Get Question By ID : 
+/v1/questions/5523c6a2e4b0449a602bc5f7
+
+

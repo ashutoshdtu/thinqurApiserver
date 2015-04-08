@@ -17,6 +17,7 @@ import com.mongodb.DBObject;
 import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
 
+import models.GenericQuestion;
 import models.HTTPResponse;
 import models.HTTPStatus;
 import models.HTTPStatusCode;
@@ -128,34 +129,41 @@ public class Questions extends Controller {
 		return status(status.code, Json.toJson(httpResponse));
 	}
 	
-	public static Result getQuestions(String method, String q, int limit, int start) {
+	public static Result getQuestions() {
 		HTTPStatus status = new HTTPStatus();
 		String metadata = null;
 		String debugInfo = null;
 		List<DBObject> questions = null;
 		DBObject dbObjQuery = null;
+		GenericQuestion query = null;
 		int resultCount = 0;
 		DBObject response = new BasicDBObject();
-		if (q == null) {
+		Form<GenericQuestion> form = Form.form(GenericQuestion.class);
+		if(form.hasErrors()) {
 			status.setCode(HTTPStatusCode.BAD_REQUEST);
-			status.setDeveloperMessage("Request Query invalid. Make sure query is not empty or null.");
-		} else if (questionDAO == null) {
+			status.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
+		}  else if (questionDAO == null) {
 			// if not connected to Questions DB
 			status.setCode(HTTPStatusCode.GONE);
 			status.setDeveloperMessage("Not connected to Questions DB");
 		} else {
+			query = form.bindFromRequest().get();
 			// Aal eez well.
-			if (method.equals("basic")) {
+			if (query.q == null || query.q == "") {
+				status.setCode(HTTPStatusCode.BAD_REQUEST);
+				status.setDeveloperMessage("Request Query invalid. Make sure query is not empty or null.");
+			} else if (query.method.equals("basic")) {
 				// do nothing as of now
-			} else if (method.equals("generic")) {
+			} else if (query.method.equals("generic")) {
 				try {
 					DB db = DAOUtils.questionMongo.mongo.getDB(Play
 							.application().configuration()
 							.getString("question.mongodb.uri.db"));
 					DBCollection dbCollection = db.getCollection("Question");
-					dbObjQuery = (DBObject) JSON.parse(q);
-					resultCount = dbCollection.find(dbObjQuery).count();
-					questions = dbCollection.find(dbObjQuery).skip(start).limit(limit).toArray();
+					dbObjQuery = (DBObject) JSON.parse(query.q);
+					DBObject dbObjSortQuery = (DBObject) JSON.parse(query.sort);
+					questions = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(query.start).limit(query.limit).toArray();
+					resultCount = questions.size();
 					status.setDeveloperMessage("Query executed successfully.");
 				} catch (Exception e) {
 					status.setCode(HTTPStatusCode.NOT_FOUND);
