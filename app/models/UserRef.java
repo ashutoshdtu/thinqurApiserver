@@ -13,7 +13,7 @@ import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 
-/**
+/** Reference to user objects. Contains only very important details of user.
  * @author ashutosh
  *
  */

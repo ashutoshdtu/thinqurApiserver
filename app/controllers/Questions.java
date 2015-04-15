@@ -109,6 +109,9 @@ public class Questions extends Controller {
 				if(question == null) {
 					httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
 					httpStatus.setDeveloperMessage("Question not found in DB");
+				} else {
+					httpStatus.setCode(HTTPStatusCode.OK);
+					httpStatus.setDeveloperMessage("Question found in DB");
 				}
 			} catch (Exception e) {
 				httpStatus.setCode(HTTPStatusCode.NOT_FOUND);

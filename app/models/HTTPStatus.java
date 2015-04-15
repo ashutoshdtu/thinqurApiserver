@@ -39,7 +39,6 @@ public class HTTPStatus {
 	public HTTPStatus() {
 		setCode(HTTPStatusCode.OK);
 		description = null;
-		
 	}
 	
 	

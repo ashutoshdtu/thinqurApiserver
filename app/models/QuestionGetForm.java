@@ -10,6 +10,6 @@ public class QuestionGetForm {
 	
 	public Integer rows = 10;
 	
-	public String sort = "{createdAt:1}";
+	public String sort = "{createdAt:-1}";
 	
 }
