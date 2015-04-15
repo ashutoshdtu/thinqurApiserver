@@ -1,25 +1,78 @@
-This is your new Play application
+# API Server#
 =================================
 
-This file will be packaged with your application, when using `activator dist`.
+##Deploy##
+To deploy apiserver do a git clone and run 
 
-Generic API :
-	##Parameters##  
-Method - Basic or Generic 
-q -  Contains the query to be executed (Required)
-Start - Records to skip from start
-Limit - Limit no. of records
-Sort - Sort query to sort the records 
+```
+#!bash
 
-Examples of Some API :
+./activator start
+```
 
-Generic Question API :
-/v1/questions?method=generic&start=1&q={%22isAnonymous%22:false}&sort={%22createdAt%22:-1}
+This will download all the dependencies and start apiserver on port 9000
 
-Feeds API : 
-/v1/questions?method=generic&limit=10&q={%22isAnonymous%22:false}&sort={%22createdAt%22:-1}
+##Details##
 
-Get Question By ID : 
-/v1/questions/5523c6a2e4b0449a602bc5f7
+Questions API tested and deployed in prod. Routes working as of now are: 
+1) GET v1/questions  - to perform query. returns a list of questions
+2) POST v1/questions - to add question. returns the saved question. 
+3) GET v1/questions/1234455 - returns a single question with id 1234455
 
 
+1) GET v1/questions
+
+sample usage: 
+> http://52.11.12.87:9000/v1/questions
+> http://52.11.12.87:9000/v1/questions?method=generic&q={isAnonymous:false}&sort="{createdAt:-1}"&rows=10&start=0
+> http://52.11.12.87:9000/v1/questions?method=generic&q={isAnonymous:false}
+
+default values: 
+> method = "generic"
+> q = "{isAnonymous:false}"
+> sort = "{createdAt:-1}"
+> start = 0;
+> rows = 10;
+
+2) POST v1/questions
+
+sample usage:
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{ "statement":"Who is better?", "tags": [ { "name":"music" }, { "name":"progressive rock" } ], "answers": [ { "statement":"Pink Floyd" }, { "statement":"Porcupine Tree" } ], "createdBy": { "id":"-1", "name":"Ashutosh Mishra" } }' http://52.11.12.87:9000/v1/questions
+
+json structure (exhaustive options):
+(NOTE: not all fields are compulsory)
+
+```
+#!java
+
+{
+    "statement":"Who is better?",         //Compulsory field
+    "tags":
+    [
+        {
+            "name":"comedian"
+        },
+        {
+           "name":"tv"
+        }
+    ],
+    "answers":
+    [
+        {
+            "statement":"Hugh Laurie"         //Compulsory field
+        },
+        {
+            "statement":"Stephen Fry"         //Compulsory field
+        }
+    ],
+    "createdBy":
+    {
+        "id":"-1",                                //Compulsory field 
+// RESERVING id=-1 FOR ADMIN USE (so use this for all questions for now)
+        "name":"Ashutosh Mishra"         //Compulsory field
+        "screenName":"ashutoshdtu"
+        "email":"ashutosh@podkart.com"
+    }
+}
+
+```
