@@ -25,7 +25,7 @@ public class HTTPResponse<Response, Metadata, DebugInfo> {
 	}
 	
 	public HTTPStatus status;
-	public Response response;
 	public Metadata metadata;
+	public Response response;
 	public DebugInfo debugInfo;
 }

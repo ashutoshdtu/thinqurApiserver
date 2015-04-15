@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 
+import com.fasterxml.classmate.util.ResolvedTypeCache.Key;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -17,7 +19,7 @@ import com.mongodb.DBObject;
 import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
 
-import models.GenericQuestion;
+import models.QuestionGetForm;
 import models.HTTPResponse;
 import models.HTTPStatus;
 import models.HTTPStatusCode;
@@ -40,84 +42,73 @@ import utils.DAOUtils;
  *
  */
 public class Questions extends Controller {
-	public static QuestionDAO questionDAO = null;
 	
-	public static boolean createQuestionsDAO() {
-		if(DAOUtils.questionMongo!=null) {
-			try {
-				questionDAO = new QuestionDAO(DAOUtils.questionMongo.datastore);
-				questionDAO.ensureIndexes();
-			} catch (Exception e) {
-				questionDAO = null;
-				e.printStackTrace();
-			}
-		}
-		if(questionDAO == null) {
-			Logger.info("Could not initialize Question DAO" );
-			return false;
-		}
-		return true;
-	}
+	static QuestionDAO questionDAO = DAOUtils.questionDAO;
 	
 	public static Result postQuestion() {
-		HTTPStatus status = new HTTPStatus();
+		HTTPStatus httpStatus = new HTTPStatus();
 		Question question = null;
 		String metadata = null;
 		String debugInfo = null;
 		
-		Form<Question> form = Form.form(Question.class);
-		if(form.hasErrors()) {
-			status.setCode(HTTPStatusCode.BAD_REQUEST);
-			status.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
-		} else if(questionDAO==null) {
-			// if not connected to Questions DB
-			status.setCode(HTTPStatusCode.GONE);
-			status.setDeveloperMessage("Not connected to Questions DB");
-		} else {
-			// Aal eez well. 
-			question = form.bindFromRequest().get();
-			try {
-				questionDAO.save(question, WriteConcern.ACKNOWLEDGED);
-				question = questionDAO.get(question.id);
-				if(question == null) {
-					status.setCode(HTTPStatusCode.GONE);
-					status.setDeveloperMessage("Question was written to DB but was not returned successfully");
-				} else {
-					status.setCode(HTTPStatusCode.RESOURCE_CREATED);
-					status.setDeveloperMessage("Question was successfully written to DB");
+		try {
+			Form<Question> form = Form.form(Question.class);
+			if(form.hasErrors()) {
+				httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+				httpStatus.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
+			} else if(questionDAO==null) {
+				// if not connected to Questions DB
+				httpStatus.setCode(HTTPStatusCode.GONE);
+				httpStatus.setDeveloperMessage("Not connected to Questions DB");
+			} else {
+				question = form.bindFromRequest().get();
+				try {
+					questionDAO.save(question, WriteConcern.SAFE);
+					question = questionDAO.get(question.id);
+					if(question == null) {
+						httpStatus.setCode(HTTPStatusCode.GONE);
+						httpStatus.setDeveloperMessage("Question was written to DB but was not returned successfully");
+					} else {
+						httpStatus.setCode(HTTPStatusCode.RESOURCE_CREATED);
+						httpStatus.setDeveloperMessage("Question was successfully written to DB");
+					}
+				} catch (Exception e) {
+					question = null;
+					httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
+					httpStatus.setDeveloperMessage("Exception occured while writing to Question DB");
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				question = null;
-				status.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
-				status.setDeveloperMessage("Exception occured while writing to Question DB");
-				e.printStackTrace();
 			}
-			
+		} catch (Exception e) {
+			httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
+			httpStatus.setDeveloperMessage("Unknown exception. See DebugInfo for more info");
+			debugInfo = e.getMessage();
+			e.printStackTrace();
 		}
-		HTTPResponse<Question, String, String> httpResponse = new HTTPResponse<Question, String, String>(status, question, metadata, debugInfo);
-		return status(status.code, Json.toJson(httpResponse));
+		HTTPResponse<Question, String, String> httpResponse = new HTTPResponse<Question, String, String>(httpStatus, question, metadata, debugInfo);
+		return status(httpStatus.code, Json.toJson(httpResponse)); 
 	}
 	
 	public static Result getQuestionById(String id) {
-		HTTPStatus status = new HTTPStatus();
+		HTTPStatus httpStatus = new HTTPStatus();
 		Question question = null;
 		String metadata = null;
 		String debugInfo = null;
 		
 		//check if id is invalid
 		if(isInvalidQuestionId(id)) {
-			status.setCode(HTTPStatusCode.BAD_REQUEST);
-			status.setDeveloperMessage("Question id invalid. Make sure id is not empty or null. Also check if its a valid UUID");
+			httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+			httpStatus.setDeveloperMessage("Question id invalid. Make sure id is not empty or null. Also check if its a valid UUID");
 		} else if(questionDAO==null) {
-			status.setCode(HTTPStatusCode.GONE);
-			status.setDeveloperMessage("Not connected to Questions DB");
+			httpStatus.setCode(HTTPStatusCode.GONE);
+			httpStatus.setDeveloperMessage("Not connected to Questions DB");
 		} else {
 			try {
 				//ObjectId questionId = new ObjectId(id);
-				question = questionDAO.get(new ObjectId(id));
+				question = questionDAO.get(id);
 			} catch (Exception e) {
-				status.setCode(HTTPStatusCode.NOT_FOUND);
-				status.setDeveloperMessage("Question not found. \n"
+				httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
+				httpStatus.setDeveloperMessage("Question not found. \n"
 						+ "Either id is invalid or question doesnot exist in database. \n"
 						+ "Also check that api is pointed to correct database. \n"
 						+ "If all seems ok, notify the fucking developers.");
@@ -125,49 +116,49 @@ public class Questions extends Controller {
 			}
 		}
 
-		HTTPResponse<Question, String, String> httpResponse = new HTTPResponse<Question, String, String>(status, question, metadata, debugInfo);
-		return status(status.code, Json.toJson(httpResponse));
+		HTTPResponse<Question, String, String> httpResponse = new HTTPResponse<Question, String, String>(httpStatus, question, metadata, debugInfo);
+		return status(httpStatus.code, Json.toJson(httpResponse));
 	}
 	
 	public static Result getQuestions() {
-		HTTPStatus status = new HTTPStatus();
+		HTTPStatus httpStatus = new HTTPStatus();
 		String metadata = null;
 		String debugInfo = null;
 		List<DBObject> questions = null;
+		
 		DBObject dbObjQuery = null;
-		GenericQuestion query = null;
+		QuestionGetForm questionGetForm = null;
 		int resultCount = 0;
-		DBObject response = new BasicDBObject();
-		Form<GenericQuestion> form = Form.form(GenericQuestion.class);
+		
+		Form<QuestionGetForm> form = Form.form(QuestionGetForm.class);
 		if(form.hasErrors()) {
-			status.setCode(HTTPStatusCode.BAD_REQUEST);
-			status.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
+			httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
 		}  else if (questionDAO == null) {
 			// if not connected to Questions DB
-			status.setCode(HTTPStatusCode.GONE);
-			status.setDeveloperMessage("Not connected to Questions DB");
+			httpStatus.setCode(HTTPStatusCode.GONE);
+			httpStatus.setDeveloperMessage("Not connected to Questions DB");
 		} else {
-			query = form.bindFromRequest().get();
-			// Aal eez well.
-			if (query.q == null || query.q == "") {
-				status.setCode(HTTPStatusCode.BAD_REQUEST);
-				status.setDeveloperMessage("Request Query invalid. Make sure query is not empty or null.");
-			} else if (query.method.equals("basic")) {
+			questionGetForm = form.bindFromRequest().get();
+			
+			if (questionGetForm.q == null || questionGetForm.q == "") {
+				httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+				httpStatus.setDeveloperMessage("Request Query invalid. Make sure query is not empty or null.");
+			} else if (questionGetForm.method.equals("basic")) {
 				// do nothing as of now
-			} else if (query.method.equals("generic")) {
+			} else if (questionGetForm.method.equals("generic")) {
 				try {
-					DB db = DAOUtils.questionMongo.mongo.getDB(Play
-							.application().configuration()
-							.getString("question.mongodb.uri.db"));
-					DBCollection dbCollection = db.getCollection("Question");
-					dbObjQuery = (DBObject) JSON.parse(query.q);
-					DBObject dbObjSortQuery = (DBObject) JSON.parse(query.sort);
-					questions = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(query.start).limit(query.limit).toArray();
+					DB db = DAOUtils.questionMongo.datastore.getDB();
+					DBCollection dbCollection = db.getCollection(Question.class.getSimpleName());
+					dbObjQuery = (DBObject) JSON.parse(questionGetForm.q);
+					DBObject dbObjSortQuery = (DBObject) JSON.parse(questionGetForm.sort);
+					questions = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(questionGetForm.start).limit(questionGetForm.rows).toArray();
 					resultCount = questions.size();
-					status.setDeveloperMessage("Query executed successfully.");
+					httpStatus.setCode(HTTPStatusCode.OK);
+					httpStatus.setDeveloperMessage("Query executed successfully.");
 				} catch (Exception e) {
-					status.setCode(HTTPStatusCode.NOT_FOUND);
-					status.setDeveloperMessage("Question not found. \n"
+					httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
+					httpStatus.setDeveloperMessage("Question not found. \n"
 							+ "Either id is invalid or question doesnot exist in database. \n"
 							+ "Also check that api is pointed to correct database. \n"
 							+ "If all seems ok, notify the fucking developers."
@@ -175,16 +166,13 @@ public class Questions extends Controller {
 					e.printStackTrace();
 				}
 			} else {
-				status.setCode(HTTPStatusCode.BAD_REQUEST);
-				status.setDeveloperMessage("Request method invalid. Make sure method parameter is passed correctly.");
+				httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+				httpStatus.setDeveloperMessage("Request method invalid. Make sure method parameter is passed correctly.");
 			}
 		}
-		response.put("status", status);
-		response.put("count", resultCount);
-		response.put("response", questions);
-		response.put("metadata", metadata);
-		response.put("debugInfo", debugInfo);
-		return status(status.code, Json.toJson(response));
+		
+		HTTPResponse<List<DBObject>, String, String> httpResponse = new HTTPResponse<List<DBObject>, String, String>(httpStatus, questions, metadata, debugInfo);
+		return status(httpStatus.code, Json.toJson(httpResponse));
 	}
 
 	/**

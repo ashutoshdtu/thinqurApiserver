@@ -9,19 +9,21 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 import play.data.validation.Constraints.MaxLength;
+import play.data.validation.Constraints.Required;
 
 /**
  * @author ashutosh
  *
  */
 
-@Embedded
+@Entity
 public class Tag {
-	public ObjectId id;
+	@Required
+	@Id
+	public String id;
 	
-	public String idString = id.toString();
-	
-	@MaxLength(200)
+	@Required
+	@MaxLength(100)
 	String name;
 	
 	boolean isActive;

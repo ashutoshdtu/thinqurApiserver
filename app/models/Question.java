@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import akka.japi.Option;
-
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -16,11 +14,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
-import org.mongodb.morphia.query.Query;
 
-import play.Play;
-import play.data.format.Formats;
-import play.data.validation.Constraints;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 
@@ -43,21 +37,21 @@ public class Question {
 	}
 	
 	@Id
-	public ObjectId id = new ObjectId();
+	public String id = new ObjectId().toString();
 	
-	public String idString = id.toString();
+	//public String idString = id.toString();
 	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
-	public boolean isAnonymous;
+	public boolean isAnonymous = false;
 	public Type type = Type.MCSC;
 	
 	@Required
 	@MaxLength(150)
 	public String statement;
 	
-	@MaxLength(700)
-	public String description;
+	//@MaxLength(700)
+	//public String description;
 	
 	@Embedded
 	public List<Answer> answers = new ArrayList<Answer>();

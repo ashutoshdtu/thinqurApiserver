@@ -48,7 +48,7 @@ public enum HTTPStatusCode {
 	429 - Too Many Requests - When a request is rejected due to rate limiting
 	500 – Internal Server Error – API developers should avoid this error. If an error occurs in the global catch blog, the stracktrace should be logged and not returned as response.
 	 */
-	OK 	 					(200, "OK", "Eyerything is working"),
+	OK 	 					(200, "OK", "Everything is working"),
 	RESOURCE_CREATED 		(201, "Created", "New resource has been created"),
 	RESOURCE_DELETED 		(204, "No Content", "The resource was successfully deleted"),
 	NOT_MODIFIED 			(304, "Not Modified", "The client can use cached data"),

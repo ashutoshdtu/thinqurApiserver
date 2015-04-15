@@ -33,28 +33,24 @@ public final class DAOUtils {
      */
     public static boolean connect() {
     	
-    	/*questionMongo = connectToQuestionMongo();
-    	if(questionDAO!=null) {
-    		Logger.info("Connected to Question DB");
-    		
-    	}*/
+    	Logger.info("Trying to connect to Question DB");
+    	questionMongo = connectToQuestionMongo();
+    	if(questionMongo!=null) {
+    		Logger.info("Found DB instance at given address:port");
+    		try {
+				questionDAO = new QuestionDAO(DAOUtils.questionMongo.datastore);
+				questionDAO.ensureIndexes();
+				Logger.info("Connected to Question DB");
+			} catch (Exception e) {
+				questionDAO = null;
+				Logger.info("Could not connect to Question DB!!");
+				e.printStackTrace();
+			}
+    	} else {
+    		Logger.info("DB instance not found at given address:port!!");
+    	}
     	
-        boolean returnValue = true; 
-    	try {
-			connectToQuestionMongo();
-		} catch (Exception e) {
-			questionMongo = null;
-			e.printStackTrace();
-			returnValue = false;
-		}
-        try {
-			connectToUserMongo();
-		} catch (Exception e) {
-			userMongo = null;
-			e.printStackTrace();
-			returnValue = false;
-		}
-    	return returnValue;
+    	return true;
     }
 
 
@@ -73,15 +69,20 @@ public final class DAOUtils {
 	 * @throws UnknownHostException 
 	 *  
 	 */
-	private static MongoDBMorphia connectToQuestionMongo() throws UnknownHostException {
+	private static MongoDBMorphia connectToQuestionMongo(){
 
-		String host = Play.application().configuration().getString("question.mongodb.uri.host");
-		String port = Play.application().configuration().getString("question.mongodb.uri.port");
-		String db = Play.application().configuration().getString("question.mongodb.uri.db");
-		questionMongo = new MongoDBMorphia(host, port, db);
-		questionMongo.morphia.map(Question.class).map(Answer.class).map(Tag.class).map(UserRef.class);
-		questionMongo.datastore.ensureIndexes();
-		questionMongo.datastore.ensureCaps();
+		try {
+			String host = Play.application().configuration().getString("question.mongodb.uri.host");
+			String port = Play.application().configuration().getString("question.mongodb.uri.port");
+			String db = Play.application().configuration().getString("question.mongodb.uri.db");
+			questionMongo = new MongoDBMorphia(host, port, db);
+			questionMongo.morphia.map(Question.class).map(Answer.class).map(Tag.class).map(UserRef.class);
+			questionMongo.datastore.ensureIndexes();
+			questionMongo.datastore.ensureCaps();
+		} catch (Exception e) {
+			questionMongo = null;
+			e.printStackTrace();
+		}
 
 		return questionMongo;
 	}

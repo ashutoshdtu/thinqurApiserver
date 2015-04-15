@@ -20,17 +20,18 @@ import play.data.validation.Constraints.Required;
 @Embedded
 public class UserRef {
 	@Required
-	public ObjectId id = new ObjectId();
+	public String id;
 	
-	public String idString = id.toString();
+	//public String idString = id.toString();
 	
 	@Required
-	@MaxLength(50)
+	@MaxLength(100)
 	String name;
 	
 	@MaxLength(50)
 	String screenName;
 	
+	@Required
 	@Email
 	String email;
 }

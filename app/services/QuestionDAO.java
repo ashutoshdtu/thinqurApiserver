@@ -34,6 +34,10 @@ public class QuestionDAO extends BasicDAO<Question, ObjectId> {
 		super(Question.class, datastore);
 		
 	}
+
+	public Question get(String id) {
+		return super.get(new ObjectId(id));
+	}
 	
 	
 }
