@@ -12,6 +12,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
 
@@ -37,9 +38,8 @@ public class Question {
 	}
 	
 	@Id
-	public String id = new ObjectId().toString();
-	
-	//public String idString = id.toString();
+	public ObjectId _id = new ObjectId();
+	public String id = _id.toString();
 	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
@@ -61,7 +61,7 @@ public class Question {
 	
 	@Required
 	@Embedded
-	UserRef createdBy = new UserRef();
+	public UserRef createdBy = new UserRef();
 	
 	@Embedded
 	public List<UserRef> updatedBy = new ArrayList<UserRef>();

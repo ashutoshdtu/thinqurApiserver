@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
@@ -16,16 +17,16 @@ import play.data.validation.Constraints.Required;
  *
  */
 
-@Entity
+@Embedded
 public class Tag {
-	@Required
-	@Id
-	public String id;
+	//@Required
+	public String id=null;
 	
 	@Required
 	@MaxLength(100)
-	String name;
+	@Indexed
+	public String name=null;
 	
-	boolean isActive;
+	public boolean isActive=false;
 
 }

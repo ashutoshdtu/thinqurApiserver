@@ -64,7 +64,7 @@ public class Questions extends Controller {
 				question = form.bindFromRequest().get();
 				try {
 					questionDAO.save(question, WriteConcern.SAFE);
-					question = questionDAO.get(question.id);
+					question = questionDAO.get(new ObjectId(question.id));
 					if(question == null) {
 						httpStatus.setCode(HTTPStatusCode.GONE);
 						httpStatus.setDeveloperMessage("Question was written to DB but was not returned successfully");
@@ -106,6 +106,10 @@ public class Questions extends Controller {
 			try {
 				//ObjectId questionId = new ObjectId(id);
 				question = questionDAO.get(id);
+				if(question == null) {
+					httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
+					httpStatus.setDeveloperMessage("Question not found in DB");
+				}
 			} catch (Exception e) {
 				httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
 				httpStatus.setDeveloperMessage("Question not found. \n"

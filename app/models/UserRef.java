@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
@@ -20,18 +21,16 @@ import play.data.validation.Constraints.Required;
 @Embedded
 public class UserRef {
 	@Required
-	public String id;
-	
-	//public String idString = id.toString();
+	public String id = null;
 	
 	@Required
 	@MaxLength(100)
-	String name;
+	public String name=null;
 	
 	@MaxLength(50)
-	String screenName;
+	public String screenName=null;
 	
 	@Required
 	@Email
-	String email;
+	public String email=null;
 }

@@ -24,8 +24,9 @@ import play.data.validation.Constraints.Required;
 public class Answer {
 	
 	@Id
-	public String id = new ObjectId().toString();	
-	//public String idString = id.toString();	
+	public ObjectId _id = new ObjectId();
+	public String id = _id.toString();
+	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
 	
@@ -36,7 +37,7 @@ public class Answer {
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
-	public Integer totalUpvotes;
+	public Integer totalUpvotes=0;
 	
 	@PrePersist void prePersist() {lastUpdatedAt = new Date();}
 	
