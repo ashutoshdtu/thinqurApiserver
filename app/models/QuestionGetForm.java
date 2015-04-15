@@ -6,7 +6,7 @@ public class QuestionGetForm {
 	
 	public String q = "{isAnonymous:false}";
 	
-	public Integer start = 0;;
+	public Integer start = 0;
 	
 	public Integer rows = 10;
 	
