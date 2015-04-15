@@ -1,18 +1,17 @@
-# API Server#
+API Server
 =================================
 
-##Deploy##
+Deploy
+---------------
 To deploy apiserver do a git clone and run 
 
-```
-#!bash
-
 ./activator start
-```
 
 This will download all the dependencies and start apiserver on port 9000
 
-##Details##
+
+Details
+---------------
 
 Questions API tested and deployed in prod. Routes working as of now are: 
 1) GET v1/questions  - to perform query. returns a list of questions
@@ -41,9 +40,6 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 
 json structure (exhaustive options):
 (NOTE: not all fields are compulsory)
-
-```
-#!java
 
 {
     "statement":"Who is better?",         //Compulsory field
@@ -74,5 +70,3 @@ json structure (exhaustive options):
         "email":"ashutosh@podkart.com"
     }
 }
-
-```
