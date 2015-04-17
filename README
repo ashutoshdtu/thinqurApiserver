@@ -23,7 +23,7 @@ Questions API tested and deployed in prod. Routes working as of now are:
 
 sample usage: 
 > http://52.11.12.87:9000/v1/questions
-> http://52.11.12.87:9000/v1/questions?method=generic&q={isAnonymous:false}&sort="{createdAt:-1}"&rows=10&start=0
+> http://52.11.12.87:9000/v1/questions?method=generic&q={isAnonymous:false}&sort={createdAt:-1}&rows=10&start=0
 > http://52.11.12.87:9000/v1/questions?method=generic&q={isAnonymous:false}
 
 default values: 
