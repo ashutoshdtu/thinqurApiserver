@@ -30,7 +30,6 @@ public class UserRef {
 	@MaxLength(50)
 	public String screenName=null;
 	
-	@Required
 	@Email
 	public String email=null;
 }

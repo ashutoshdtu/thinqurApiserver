@@ -65,7 +65,7 @@ public final class DAOUtils {
 
 	/**
 	 * Connects to Questions MongoDB database by reading the configuration file
-	 * @return 
+	 * @return MongoDBMorphia
 	 * @throws UnknownHostException 
 	 *  
 	 */

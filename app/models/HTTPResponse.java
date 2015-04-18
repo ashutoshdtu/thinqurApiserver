@@ -12,15 +12,15 @@ package models;
 public class HTTPResponse<Response, Metadata, DebugInfo> {
 	/**
 	 * @param status
+	 * @param metadata
 	 * @param response
-	 * @param metaData
 	 * @param debugInfo
 	 */
-	public HTTPResponse(HTTPStatus status, Response response,
-			Metadata metadata, DebugInfo debugInfo) {
+	public HTTPResponse(HTTPStatus status, Metadata metadata,
+			Response response, DebugInfo debugInfo) {
 		this.status = status;
-		this.response = response;
 		this.metadata = metadata;
+		this.response = response;
 		this.debugInfo = debugInfo;
 	}
 	
