@@ -32,4 +32,6 @@ public class UserRef {
 	
 	@Email
 	public String email=null;
+	
+	public String imageURL;
 }

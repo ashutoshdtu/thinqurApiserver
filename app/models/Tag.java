@@ -27,6 +27,8 @@ public class Tag {
 	@Indexed
 	public String name=null;
 	
+	public String imageURL;
+	
 	public boolean isActive=false;
 
 }

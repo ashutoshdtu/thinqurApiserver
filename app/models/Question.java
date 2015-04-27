@@ -50,6 +50,8 @@ public class Question {
 	@MaxLength(150)
 	public String statement;
 	
+	public String imageURL;
+	
 	//@MaxLength(700)
 	//public String description;
 	

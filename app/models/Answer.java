@@ -34,6 +34,8 @@ public class Answer {
 	@MaxLength(50)
 	public String statement;
 	
+	public String imageURL;
+	
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
