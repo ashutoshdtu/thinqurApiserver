@@ -18,6 +18,7 @@ Questions API tested and deployed in prod. Routes working as of now are:
 1) GET v1/questions  - to perform query. returns a list of questions
 2) POST v1/questions - to add question. returns the saved question. 
 3) GET v1/questions/1234455 - returns a single question with id 1234455
+4) DELETE v1/questions/1234455 - delete a single question (COMING SOON)
 
 
 1) GET v1/questions
