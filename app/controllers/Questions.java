@@ -6,6 +6,7 @@ package controllers;
 import java.util.List;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bson.types.ObjectId;
 
 import com.mongodb.DB;
@@ -79,13 +80,14 @@ public class Questions extends Controller {
 					question = null;
 					httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
 					httpStatus.setDeveloperMessage("Exception occured while writing to Question DB");
+					debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 					e.printStackTrace();
 				}
 			}
 		} catch (Exception e) {
 			httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
 			httpStatus.setDeveloperMessage("Unknown exception. See DebugInfo for more info");
-			debugInfo = e.getMessage();
+			debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 			e.printStackTrace();
 		}
 		
@@ -206,7 +208,7 @@ public class Questions extends Controller {
 		} catch (Exception e) {
 			httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
 			httpStatus.setDeveloperMessage("Unknown exception. See DebugInfo for more info");
-			debugInfo = e.getMessage();
+			debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 			e.printStackTrace();
 		}
 
