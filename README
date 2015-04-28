@@ -18,7 +18,7 @@ Questions API tested and deployed in prod. Routes working as of now are:
 1) GET v1/questions  - to perform query. returns a list of questions
 2) POST v1/questions - to add question. returns the saved question. 
 3) GET v1/questions/1234455 - returns a single question with id 1234455
-4) DELETE v1/questions/1234455 - delete a single question (COMING SOON)
+4) DELETE v1/questions/1234455 - delete a single question
 
 
 1) GET v1/questions
@@ -80,4 +80,4 @@ curl -X GET "http://localhost:9000/v1/questions/553fc9521c409724c485913b"
 
 4) DELETE v1/questions
 sample usage using curl:
-curl -X DELETE "http://localhost:9000/v1/questions/553fc9521c409724c485913b" 
+curl -X DELETE "http://localhost:9000/v1/questions/553fc9521c409724c485913b"
