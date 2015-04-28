@@ -9,8 +9,11 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
+import utils.ObjectID_Serializer;
 
 /**
  * @author ashutosh
@@ -30,5 +33,20 @@ public class Tag {
 	public String imageURL;
 	
 	public boolean isActive=false;
+	
+	/*
+	//@JsonSerialize(using=ObjectID_Serializer.class) 
+    public ObjectId getId() {
+        if(id == null){
+            return id = new ObjectId();
+        }
+        return id;
+    }
+    
+    //@JsonSerialize(using=ObjectID_Serializer.class) 
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+    */
 
 }

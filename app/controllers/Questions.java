@@ -55,20 +55,22 @@ public class Questions extends Controller {
 		String debugInfo = null;
 		
 		// 3. Calculate response
+		Form<Question> form;
 		try {
-			Form<Question> form = Form.form(Question.class);
+			form = Form.form(Question.class);
 			if(form.hasErrors()) {
-				httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
-				httpStatus.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
-			} else if(questionDAO==null) {
+				throw new Exception("Form has errors");
+			}
+			question = form.bindFromRequest().get();
+
+			if(questionDAO==null) {
 				// if not connected to Questions DB
 				httpStatus.setCode(HTTPStatusCode.GONE);
 				httpStatus.setDeveloperMessage("Not connected to Questions DB");
 			} else {
-				question = form.bindFromRequest().get();
 				try {
 					questionDAO.save(question, WriteConcern.SAFE);
-					question = questionDAO.get(new ObjectId(question.id));
+					question = questionDAO.get(question.get_id());
 					if(question == null) {
 						httpStatus.setCode(HTTPStatusCode.GONE);
 						httpStatus.setDeveloperMessage("Question was written to DB but was not returned successfully");
@@ -80,20 +82,19 @@ public class Questions extends Controller {
 					question = null;
 					httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
 					httpStatus.setDeveloperMessage("Exception occured while writing to Question DB");
-					debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
+					//debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 					e.printStackTrace();
 				}
 			}
-		} catch (Exception e) {
+		} catch (Exception e1) {
 			httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
-			httpStatus.setDeveloperMessage("Unknown exception. See DebugInfo for more info");
-			debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
-			e.printStackTrace();
+			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
+			e1.printStackTrace();
 		}
-		
+
 		// 4. Stop stopwatch
 		stopWatch.stop();
-		
+
 		// 5. Calculate final HTTP response
 		metadata.setQTime(stopWatch.getTime());
 		HTTPResponse<Question, Metadata, String> httpResponse = new HTTPResponse<Question, Metadata, String>(httpStatus, metadata, question, debugInfo);

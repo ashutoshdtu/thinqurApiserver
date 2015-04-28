@@ -14,10 +14,16 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.NotSaved;
 import org.mongodb.morphia.annotations.PrePersist;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
+import utils.ObjectID_Serializer;
+
 
 
 /** class to store Question
@@ -37,9 +43,11 @@ public class Question {
 		MCMC         // Multiple choice multiple correct
 	}
 	
+	@JsonIgnore
 	@Id
-	public ObjectId _id = new ObjectId();
-	public String id = _id.toString();
+	ObjectId _id = new ObjectId();
+	
+	String id = _id.toString();
 	
 	public Date lastUpdatedAt = new Date();
 	public Date createdAt = new Date();
@@ -79,4 +87,37 @@ public class Question {
 	
 	
 	@PrePersist void prePersist() {lastUpdatedAt = new Date();}
+	
+	public void set_id(ObjectId _id) {
+		this._id = _id;
+		this.id = _id.toString();
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+		this._id = new ObjectId(id);
+	}
+	
+	public ObjectId get_id() {
+		return _id;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	/*
+	//@JsonSerialize(using=ObjectID_Serializer.class) 
+    public ObjectId getId() {
+        if(id == null){
+            return id = new ObjectId();
+        }
+        return id;
+    }
+    
+    //@JsonSerialize(using=ObjectID_Serializer.class) 
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+    */
 }
