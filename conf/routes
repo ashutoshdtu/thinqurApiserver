@@ -18,6 +18,7 @@ DELETE  /v1/questions/:id 			controllers.Questions.deleteQuestionById(id: String
 
 # get from Questions collection
 GET 	/v1/questions 				controllers.Questions.getQuestions()
-
 # post into Questions collection
 POST 	/v1/questions 				controllers.Questions.postQuestion()
+# put into Questions collection
+PUT 	/v1/questions 				controllers.Questions.postQuestion()
