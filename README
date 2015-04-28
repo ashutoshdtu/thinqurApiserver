@@ -72,3 +72,12 @@ json structure (exhaustive options):
         "email":"ashutosh@podkart.com"
     }
 }
+
+3) GET v1/questions
+sample usage using curl:
+curl -X GET "http://localhost:9000/v1/questions/553fc9521c409724c485913b" 
+
+
+4) DELETE v1/questions
+sample usage using curl:
+curl -X DELETE "http://localhost:9000/v1/questions/553fc9521c409724c485913b" 
