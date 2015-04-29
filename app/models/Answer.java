@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -15,6 +17,7 @@ import org.mongodb.morphia.annotations.NotSaved;
 import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
@@ -26,6 +29,7 @@ import utils.ObjectID_Serializer;
  *
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Answer {
 	
 	@JsonIgnore
@@ -33,8 +37,8 @@ public class Answer {
 	ObjectId _id = new ObjectId();
 	String id = _id.toString();
 	
-	public Date lastUpdatedAt = new Date();
-	public Date createdAt = new Date();
+	public String lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();
+	public String createdAt = new DateTime( DateTimeZone.UTC ).toString();
 	
 	@Required
 	@MaxLength(50)
@@ -47,7 +51,7 @@ public class Answer {
 	
 	public Integer totalUpvotes=0;
 	
-	@PrePersist void prePersist() {lastUpdatedAt = new Date();}
+	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
 	
 	public void set_id(ObjectId _id) {
 		this._id = _id;

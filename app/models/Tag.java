@@ -9,6 +9,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
@@ -21,6 +22,7 @@ import utils.ObjectID_Serializer;
  */
 
 @Embedded
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Tag {
 	//@Required
 	public String id=null;

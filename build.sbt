@@ -21,6 +21,8 @@ libraryDependencies ++= Seq(
   "org.springframework" % "spring-expression" % "4.1.1.RELEASE",
   "org.springframework" % "spring-aop" % "4.1.1.RELEASE",
   "org.springframework" % "spring-test" % "4.1.1.RELEASE" % "test",
+  "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.5.3",
+  "joda-time" % "joda-time" % "2.7",
   javaJdbc,
   javaEbean,
   cache,

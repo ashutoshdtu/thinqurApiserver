@@ -18,13 +18,14 @@ import org.mongodb.morphia.annotations.NotSaved;
 import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import utils.ObjectID_Serializer;
 
-
+import org.joda.time.*;
 
 /** class to store Question
  * 
@@ -36,6 +37,7 @@ import utils.ObjectID_Serializer;
 	   @Index("user, -cs"),
 	   @Index("changedRecord, -cs")})
 	   */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Question {
 	
 	public enum Type {
@@ -49,8 +51,8 @@ public class Question {
 	
 	String id = _id.toString();
 	
-	public Date lastUpdatedAt = new Date();
-	public Date createdAt = new Date();
+	public String lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();
+	public String createdAt = new DateTime( DateTimeZone.UTC ).toString();
 	public boolean isAnonymous = false;
 	public Type type = Type.MCSC;
 	
@@ -86,7 +88,7 @@ public class Question {
 	public List<UserRef> downvotedBy = new ArrayList<UserRef>();
 	
 	
-	@PrePersist void prePersist() {lastUpdatedAt = new Date();}
+	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
 	
 	public void set_id(ObjectId _id) {
 		this._id = _id;
