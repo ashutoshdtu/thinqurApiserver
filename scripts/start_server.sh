@@ -8,4 +8,4 @@ $cmd
 startcmd="./activator start"
 echo $startcmd
 ${startcmd} & > /dev/null &
-disown
+disown -h

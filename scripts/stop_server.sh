@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting apiserver"
+echo "Stopping apiserver"
 
 cmd="cd .."
 echo $cmd
