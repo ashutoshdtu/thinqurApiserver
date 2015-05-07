@@ -5,7 +5,7 @@ files:
     destination: /home/apiserver
 hooks:
   BeforeInstall:
-    - location: yum install java-1.7.0-openjdk-devel
+    - location: scripts/install_dependency.sh
       timeout: 300
       runas: root
   ApplicationStart:
