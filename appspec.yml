@@ -4,6 +4,10 @@ files:
   - source: /
     destination: /home/apiserver
 hooks:
+  BeforeInstall:
+    - location: yum install java-1.7.0-openjdk-devel
+      timeout: 300
+      runas: root
   ApplicationStart:
     - location: scripts/start_server.sh
       timeout: 300
