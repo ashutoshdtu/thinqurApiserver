@@ -3,12 +3,17 @@
  */
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -110,8 +115,8 @@ public class Questions extends Controller {
 		// 2. Initialize http response objects
 		HTTPStatus httpStatus = new HTTPStatus();
 		MetadataGetCollection metadata = new MetadataGetCollection();
+		List<Question> questions = new ArrayList<Question>();
 		String debugInfo = null;
-		List<DBObject> questions = null;
 
 		// 3. Calculate response
 		DBObject dbObjQuery = null;
@@ -141,16 +146,17 @@ public class Questions extends Controller {
 						DBCollection dbCollection = db.getCollection(Question.class.getSimpleName());
 						dbObjQuery = (DBObject) JSON.parse(questionGetForm.q);
 						DBObject dbObjSortQuery = (DBObject) JSON.parse(questionGetForm.sort);
-						questions = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(questionGetForm.start).limit(questionGetForm.rows).toArray();
+						List<DBObject> questionsDBObject = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(questionGetForm.start).limit(questionGetForm.rows).toArray();
 						numFound = dbCollection.find(dbObjQuery).count();
+						questions = new ObjectMapper().readValue(questionsDBObject.toString(), new TypeReference<List<Question>>() { });
 						httpStatus.setCode(HTTPStatusCode.OK);
 						httpStatus.setDeveloperMessage("Query executed successfully.");
 					} catch (Exception e) {
 						httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
-						httpStatus.setDeveloperMessage("Question not found. \n"
-								+ "Either id is invalid or question doesnot exist in database. \n"
-								+ "Also check that api is pointed to correct database. \n"
-								+ "If all seems ok, notify the fucking developers."
+						httpStatus.setDeveloperMessage("Question not found. "
+								+ "Either id is invalid or question doesnot exist in database. "
+								+ "Also check that api is pointed to correct database. "
+								+ "If all seems ok, notify the fucking developers. "
 								+ e.toString());
 						debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 						e.printStackTrace();
@@ -173,7 +179,7 @@ public class Questions extends Controller {
 		// 5. Calculate final HTTP response
 		metadata.setQTime(stopWatch.getTime());
 		metadata.setNumFound(numFound);
-		HTTPResponse<List<DBObject>, MetadataGetCollection, String> httpResponse = new HTTPResponse<List<DBObject>, MetadataGetCollection, String>(httpStatus, metadata, questions, debugInfo);
+		HTTPResponse<List<Question>, MetadataGetCollection, String> httpResponse = new HTTPResponse<List<Question>, MetadataGetCollection, String>(httpStatus, metadata, questions, debugInfo);
 		return status(httpStatus.code, Json.toJson(httpResponse));
 	}
 
@@ -208,9 +214,9 @@ public class Questions extends Controller {
 				}
 			} catch (Exception e) {
 				httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
-				httpStatus.setDeveloperMessage("Question not found. \n"
-						+ "Either id is invalid or question doesnot exist in database. \n"
-						+ "Also check that api is pointed to correct database. \n"
+				httpStatus.setDeveloperMessage("Question not found. "
+						+ "Either id is invalid or question doesnot exist in database. "
+						+ "Also check that api is pointed to correct database. "
 						+ "If all seems ok, notify the fucking developers.");
 				debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 				e.printStackTrace();
@@ -264,9 +270,9 @@ public class Questions extends Controller {
 				}
 			} catch (Exception e) {
 				httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
-				httpStatus.setDeveloperMessage("Could not complete delete action. \n"
-						+ "Either id is invalid or question doesnot exist in database. \n"
-						+ "Also check that api is pointed to correct database. \n"
+				httpStatus.setDeveloperMessage("Could not complete delete action. "
+						+ "Either id is invalid or question doesnot exist in database. "
+						+ "Also check that api is pointed to correct database. "
 						+ "If all seems ok, notify the fucking developers.");
 				debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
 				e.printStackTrace();

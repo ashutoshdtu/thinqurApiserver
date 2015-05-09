@@ -21,6 +21,8 @@ libraryDependencies ++= Seq(
   "org.springframework" % "spring-expression" % "4.1.1.RELEASE",
   "org.springframework" % "spring-aop" % "4.1.1.RELEASE",
   "org.springframework" % "spring-test" % "4.1.1.RELEASE" % "test",
+  "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.5.3",
+  "joda-time" % "joda-time" % "2.7",
   javaJdbc,
   javaEbean,
   cache,
@@ -37,3 +39,11 @@ resolvers ++= Seq(
   "play-authenticate (release)" at "http://joscha.github.io/play-authenticate/repo/releases/",
   "play-authenticate (snapshot)" at "http://joscha.github.io/play-authenticate/repo/snapshots/"
 )
+
+TaskKey[Unit]("stop") := {
+  val pidFile = target.value / "universal" / "stage" / "RUNNING_PID"
+  if (!pidFile.exists) throw new Exception("App not started!")
+  val pid = IO.read(pidFile)
+  s"kill $pid".!
+  println(s"Stopped application with process ID $pid")
+}
