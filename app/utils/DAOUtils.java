@@ -15,6 +15,7 @@ import org.mongodb.morphia.Morphia;
 import play.Logger;
 import play.Play;
 import services.QuestionDAO;
+import services.UserDAO;
 
 import java.net.UnknownHostException;
 
@@ -23,7 +24,7 @@ public final class DAOUtils {
     public static MongoDBMorphia questionMongo = null;
     public static MongoDBMorphia userMongo = null;
     public static QuestionDAO questionDAO = null;
-    //public static UserDAO userDAO = null;
+    public static UserDAO userDAO = null;
     
 	/**
      * Connects to MongoDB based on the configuration settings.
@@ -47,7 +48,24 @@ public final class DAOUtils {
 				e.printStackTrace();
 			}
     	} else {
-    		Logger.info("DB instance not found at given address:port!!");
+    		Logger.info("Question DB instance not found at given address:port!!");
+    	}
+    	
+    	Logger.info("Trying to connect to User DB");
+    	userMongo = connectToUserMongo();
+    	if(userMongo!=null) {
+    		Logger.info("Found DB instance at given address:port");
+    		try {
+				userDAO = new UserDAO(DAOUtils.userMongo.datastore);
+				userDAO.ensureIndexes();
+				Logger.info("Connected to User DB");
+			} catch (Exception e) {
+				userDAO = null;
+				Logger.info("Could not connect to User DB!!");
+				e.printStackTrace();
+			}
+    	} else {
+    		Logger.info("User DB instance not found at given address:port!!");
     	}
     	
     	return true;
@@ -55,10 +73,26 @@ public final class DAOUtils {
 
 
     /**
-	 * 
+	 * Connects to User MongoDB database by reading the configuration file
+	 * @return MongoDBMorphia
+	 * @throws UnknownHostException 
+	 *  
 	 */
-	private static void connectToUserMongo() {
-		// TODO Auto-generated method stub
+	private static MongoDBMorphia connectToUserMongo() {
+		try {
+			String host = Play.application().configuration().getString("question.mongodb.uri.host");
+			String port = Play.application().configuration().getString("question.mongodb.uri.port");
+			String db = Play.application().configuration().getString("user.mongodb.uri.db");
+			userMongo = new MongoDBMorphia(host, port, db);
+			userMongo.morphia.map(User.class).map(LinkedAccount.class);
+			userMongo.datastore.ensureIndexes();
+			userMongo.datastore.ensureCaps();
+		} catch (Exception e) {
+			userMongo = null;
+			e.printStackTrace();
+		}
+
+		return userMongo;
 		
 	}
 
@@ -93,7 +127,7 @@ public final class DAOUtils {
      */
     public static void disconnect() {
     	questionMongo.closeMongoConnection();
-    	//userMongo.closeMongoConnection();
+    	userMongo.closeMongoConnection();
     }
 
 }

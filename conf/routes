@@ -22,3 +22,15 @@ GET 	/v1/questions 				controllers.Questions.getQuestions()
 POST 	/v1/questions 				controllers.Questions.postQuestion()
 # put into Questions collection
 PUT 	/v1/questions 				controllers.Questions.postQuestion()
+
+## User API
+
+# get a User
+GET     /v1/users/:id 			    controllers.Users.getUserById(id: String)
+GET     /v1/users/email/:email		controllers.Users.getUserByEmail(email: String)
+# post into Users collection
+POST 	/v1/users 					controllers.Users.postUser()
+# delete a User
+DELETE  /v1/users/:id 				controllers.Users.deleteUserById(id: String)
+# put into Users collection
+PUT 	/v1/users 					controllers.Users.putUser()
