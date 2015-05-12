@@ -80,8 +80,8 @@ public final class DAOUtils {
 	 */
 	private static MongoDBMorphia connectToUserMongo() {
 		try {
-			String host = Play.application().configuration().getString("question.mongodb.uri.host");
-			String port = Play.application().configuration().getString("question.mongodb.uri.port");
+			String host = Play.application().configuration().getString("user.mongodb.uri.host");
+			String port = Play.application().configuration().getString("user.mongodb.uri.port");
 			String db = Play.application().configuration().getString("user.mongodb.uri.db");
 			userMongo = new MongoDBMorphia(host, port, db);
 			userMongo.morphia.map(User.class).map(LinkedAccount.class);

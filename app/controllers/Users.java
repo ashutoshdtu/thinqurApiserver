@@ -9,6 +9,7 @@ import models.HTTPStatus;
 import models.HTTPStatusCode;
 import models.LinkedAccount;
 import models.Metadata;
+import models.MetadataPostUser;
 import models.Question;
 import models.User;
 
@@ -37,7 +38,7 @@ public class Users extends Controller {
 		HTTPStatus httpStatus = new HTTPStatus();
 		User user = null;
 		User existingUser = null;
-		Metadata metadata = new Metadata();
+		MetadataPostUser metadata = new MetadataPostUser();
 		String debugInfo = null;
 
 		// 3. Calculate response
@@ -59,7 +60,7 @@ public class Users extends Controller {
 						metadata.setNewRecord(false);
 						user.set_id(existingUser.get_id());
 						if (compareUserList(existingUser.linkedAccounts, user.linkedAccounts)) {
-							System.out.print("asgagdsfhgsdf");
+							//System.out.print("asgagdsfhgsdf");
 							existingUser.linkedAccounts
 									.addAll(user.linkedAccounts);
 						}
@@ -96,7 +97,7 @@ public class Users extends Controller {
 		stopWatch.stop();
 		// 5. Calculate final HTTP response
 		metadata.setQTime(stopWatch.getTime());
-		HTTPResponse<User, Metadata, String> httpResponse = new HTTPResponse<User, Metadata, String>(
+		HTTPResponse<User, MetadataPostUser, String> httpResponse = new HTTPResponse<User, MetadataPostUser, String>(
 				httpStatus, metadata, user, debugInfo);
 		return status(httpStatus.code, Json.toJson(httpResponse));
 	}
