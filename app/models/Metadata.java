@@ -14,5 +14,5 @@ public class Metadata {
 	public void setQTime(long QTime) {
 		this.QTime = QTime; 
 	}
-
+	
 }
