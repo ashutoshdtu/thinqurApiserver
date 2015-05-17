@@ -4,18 +4,20 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.PrePersist;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import play.data.validation.Constraints.Required;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * class to store User
@@ -24,6 +26,7 @@ import play.data.validation.Constraints.Required;
  * 
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
 	@JsonIgnore
@@ -45,8 +48,8 @@ public class User {
 	public boolean isVerified = false;
 	public boolean isActive = true;
 	public String timezone = null;
-	public Date createdAt = new Date();
-	public Date lastUpdatedAt = new Date();
+	public String lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
+	public String createdAt = new DateTime(DateTimeZone.UTC).toString();
 
 	@Required
 	@Embedded
@@ -54,7 +57,7 @@ public class User {
 
 	@PrePersist
 	void prePersist() {
-		lastUpdatedAt = new Date();
+		lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
 	}
 
 	public void set_id(ObjectId _id) {
