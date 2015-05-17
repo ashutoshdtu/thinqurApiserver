@@ -28,6 +28,7 @@ PUT 	/v1/questions 				controllers.Questions.postQuestion()
 # get a User
 GET     /v1/users/:id 			    controllers.Users.getUserById(id: String)
 GET     /v1/users/email/:email		controllers.Users.getUserByEmail(email: String)
+GET 	/v1/users 					controllers.Users.getUsers()
 # post into Users collection
 POST 	/v1/users 					controllers.Users.postUser()
 # delete a User

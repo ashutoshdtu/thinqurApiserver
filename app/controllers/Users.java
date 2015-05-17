@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -9,14 +10,23 @@ import models.HTTPStatus;
 import models.HTTPStatusCode;
 import models.LinkedAccount;
 import models.Metadata;
+import models.MetadataGetCollection;
 import models.MetadataPostUser;
 import models.Question;
+import models.QuestionGetForm;
 import models.User;
+import models.UserGetForm;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.StopWatch;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.WriteConcern;
+import com.mongodb.util.JSON;
 
 import play.data.Form;
 import play.libs.Json;
@@ -203,6 +213,82 @@ public class Users extends Controller {
 		metadata.setQTime(stopWatch.getTime());
 		HTTPResponse<User, Metadata, String> httpResponse = new HTTPResponse<User, Metadata, String>(
 				httpStatus, metadata, user, debugInfo);
+		return status(httpStatus.code, Json.toJson(httpResponse));
+	}
+	
+	public static Result getUsers() {
+		// 1. Start stopwatch
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+
+		// 2. Initialize http response objects
+		HTTPStatus httpStatus = new HTTPStatus();
+		MetadataGetCollection metadata = new MetadataGetCollection();
+		List<User> users = new ArrayList<User>();
+		String debugInfo = null;
+
+		// 3. Calculate response
+		DBObject dbObjQuery = null;
+		UserGetForm userGetForm = null;
+		Integer numFound = 0;
+
+		try {
+			Form<UserGetForm> form = Form.form(UserGetForm.class);
+			if(form.hasErrors()) {
+				throw new Exception("Form has errors");
+			}
+			userGetForm = form.bindFromRequest().get();
+
+			if(userDAO==null) {
+				// if not connected to Users DB
+				httpStatus.setCode(HTTPStatusCode.GONE);
+				httpStatus.setDeveloperMessage("Not connected to Users DB");
+			} else {
+				if (userGetForm.q == null || userGetForm.q == "") {
+					httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+					httpStatus.setDeveloperMessage("Request Query invalid. Make sure query is not empty or null.");
+				} else if (userGetForm.method.equals("basic")) {
+					// do nothing as of now
+				} else if (userGetForm.method.equals("generic")) {
+					try {
+						DB db = DAOUtils.userMongo.datastore.getDB();
+						DBCollection dbCollection = db.getCollection(User.class.getSimpleName());
+						dbObjQuery = (DBObject) JSON.parse(userGetForm.q);
+						DBObject dbObjSortQuery = (DBObject) JSON.parse(userGetForm.sort);
+						List<DBObject> userDBObject = dbCollection.find(dbObjQuery).sort(dbObjSortQuery).skip(userGetForm.start).limit(userGetForm.rows).toArray();
+						numFound = dbCollection.find(dbObjQuery).count();
+						users = new ObjectMapper().readValue(userDBObject.toString(), new TypeReference<List<User>>() {});
+						httpStatus.setCode(HTTPStatusCode.OK);
+						httpStatus.setDeveloperMessage("Query executed successfully.");
+					} catch (Exception e) {
+						httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
+						httpStatus.setDeveloperMessage("User not found. "
+								+ "Either id is invalid or user doesnot exist in database. "
+								+ "Also check that api is pointed to correct database. "
+								+ "If all seems ok, notify the fucking developers. "
+								+ e.toString());
+						debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
+						e.printStackTrace();
+					}
+				} else {
+					httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+					httpStatus.setDeveloperMessage("Request method invalid. Make sure method parameter is passed correctly.");
+				}
+			}
+		} catch (Exception e) {
+			httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.UserGetForm.java file");
+			debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
+			e.printStackTrace();
+		}
+
+		// 4. Stop stopwatch
+		stopWatch.stop();
+
+		// 5. Calculate final HTTP response
+		metadata.setQTime(stopWatch.getTime());
+		metadata.setNumFound(numFound);
+		HTTPResponse<List<User>, MetadataGetCollection, String> httpResponse = new HTTPResponse<List<User>, MetadataGetCollection, String>(httpStatus, metadata, users, debugInfo);
 		return status(httpStatus.code, Json.toJson(httpResponse));
 	}
 	
