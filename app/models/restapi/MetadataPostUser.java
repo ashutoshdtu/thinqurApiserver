@@ -1,7 +1,8 @@
 /**
  * 
  */
-package models;
+package models.restapi;
+
 
 /** Class to store response format for metadata of a post method on users collection
  * @author ashutosh

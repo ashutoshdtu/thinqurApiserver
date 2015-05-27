@@ -5,7 +5,9 @@ package models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
@@ -21,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import play.api.libs.iteratee.internal;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import utils.ObjectID_Serializer;
@@ -73,7 +76,7 @@ public class Question {
 	
 	@Required
 	@Embedded
-	public UserRef createdBy = new UserRef();
+	public UserRef createdBy = null;
 	
 	@Embedded
 	public List<UserRef> updatedBy = new ArrayList<UserRef>();
@@ -86,6 +89,73 @@ public class Question {
 	
 	@Embedded
 	public List<UserRef> downvotedBy = new ArrayList<UserRef>();
+	
+	@NotSaved
+	int totalUpdates; 
+	
+	@NotSaved
+	int totalFollowers;
+	
+	@NotSaved
+	int totalUpvotes;
+	
+	@NotSaved
+	int totalDownvotes;
+	
+	
+	
+	
+	/*
+	 * User specific information
+	 */
+	@NotSaved
+	public String userId = null;
+
+	@NotSaved
+	public boolean isUpdated = false;
+	
+	@NotSaved
+	public boolean isFollowed = false;
+	
+	@NotSaved
+	public boolean isQuestionUpvoted = false;
+
+	@NotSaved
+	public boolean isQuestionDownvoted = false;
+
+	@NotSaved
+	public boolean isAnswerUpvoted = false;
+
+	@NotSaved
+	public String answerUpvoted = null;
+	
+	
+	
+	
+	/*
+	 * Temp variables
+	 */
+	@NotSaved
+	@JsonIgnore
+	Map<String, Integer> updatedByMap = new HashMap<String, Integer>();
+	
+	@NotSaved
+	@JsonIgnore
+	Map<String, Integer> followedByMap = new HashMap<String, Integer>();
+	
+	@NotSaved
+	@JsonIgnore
+	Map<String, Integer> upvotedByMap = new HashMap<String, Integer>();
+	
+	@NotSaved
+	@JsonIgnore
+	Map<String, Integer> downvotedByMap = new HashMap<String, Integer>();
+	
+	@NotSaved
+	@JsonIgnore
+	Map<String, Map<String, Integer>> answeredByMap = new HashMap<String, Map<String,Integer>>();
+	
+	
 	
 	
 	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
@@ -108,18 +178,100 @@ public class Question {
 		return id;
 	}
 	
-	/*
-	//@JsonSerialize(using=ObjectID_Serializer.class) 
-    public ObjectId getId() {
-        if(id == null){
-            return id = new ObjectId();
-        }
-        return id;
-    }
-    
-    //@JsonSerialize(using=ObjectID_Serializer.class) 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-    */
+	public int getTotalUpdates() {
+		return updatedBy != null ? updatedBy.size() : 0;
+	}
+	
+	public void setTotalUpdates(int totalUpdates) {}
+	
+	public int getTotalFollowers() {
+		return followedBy != null ? followedBy.size() : 0;
+	}
+	
+	public void setTotalFollowers(int totalFollowers) {}
+	
+	public int getTotalUpvotes() {
+		return upvotedBy != null ? upvotedBy.size() : 0;
+	}
+	
+	public void setTotalUpvotes(int totalUpvotes) {}
+	
+	public int getTotalDownvotes() {
+		return downvotedBy != null ? downvotedBy.size() : 0;
+	}
+	
+	public void setTotalDownvotes(int totalDownvotes) {}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+		calculateUpdatedByMap();
+		calculateFollowedByMap();
+		calculateUpvotedByMap();
+		calculateDownvotedByMap();
+		calculateAnsweredByMap();
+		if(updatedByMap.containsKey(userId)) {
+			isUpdated = true;
+		}
+		if(followedByMap.containsKey(userId)) {
+			isFollowed = true;
+		}
+		if(upvotedByMap.containsKey(userId)) {
+			isQuestionUpvoted = true;
+		}
+		if(downvotedByMap.containsKey(userId)) {
+			isQuestionDownvoted = true;
+		}
+		for(String answerId: answeredByMap.keySet()) {
+			if(answeredByMap.get(answerId).containsKey(userId)){
+				isAnswerUpvoted = true;
+				answerUpvoted = answerId;
+			}
+		}
+	}
+
+	private void calculateUpdatedByMap() {
+		if(updatedBy!=null && updatedBy.size()>0) {
+			for(UserRef user : updatedBy) {
+				updatedByMap.put(user.id, 1);
+			}
+		}
+	}
+	
+	private void calculateFollowedByMap() {
+		if(followedBy!=null && followedBy.size()>0) {
+			for(UserRef user : followedBy) {
+				followedByMap.put(user.id, 1);
+			}
+		}
+	}
+	
+	private void calculateUpvotedByMap() {
+		if(upvotedBy!=null && upvotedBy.size()>0) {
+			for(UserRef user : upvotedBy) {
+				upvotedByMap.put(user.id, 1);
+			}
+		}
+	}
+	
+	private void calculateDownvotedByMap() {
+		if(downvotedBy!=null && downvotedBy.size()>0) {
+			for(UserRef user : downvotedBy) {
+				downvotedByMap.put(user.id, 1);
+			}
+		}
+	}
+	
+	private void calculateAnsweredByMap() {
+		if(answers!=null && answers.size()>0) {
+			for(Answer answer: answers) {
+				Map<String, Integer> upvotedByMap = new HashMap<String, Integer>();
+				if(answer.upvotedBy!=null && answer.upvotedBy.size()>0) {
+					for(UserRef user : answer.upvotedBy) {
+						upvotedByMap.put(user.id, 1);
+					}
+				}
+				answeredByMap.put(answer.id, upvotedByMap);
+			}
+		}
+	}
 }

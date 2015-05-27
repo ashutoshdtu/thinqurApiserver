@@ -49,7 +49,8 @@ public class Answer {
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
-	public Integer totalUpvotes=0;
+	@NotSaved
+	Integer totalUpvotes=0;
 	
 	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
 	
@@ -69,6 +70,10 @@ public class Answer {
 	
 	public String getId() {
 		return id;
+	}
+	
+	public Integer getTotalUpvotes() {
+		return upvotedBy.size();
 	}
 	
 	/*

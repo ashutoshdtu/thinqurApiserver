@@ -1,7 +1,8 @@
 /**
  * 
  */
-package models;
+package models.restapi;
+
 
 
 /**

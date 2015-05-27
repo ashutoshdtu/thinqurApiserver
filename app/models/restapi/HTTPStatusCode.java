@@ -1,7 +1,7 @@
 /**
  * 
  */
-package models;
+package models.restapi;
 
 /**
  * <p>
@@ -59,7 +59,7 @@ public enum HTTPStatusCode {
 	METHOD_NOT_ALLOWED 		(405, "Method Not Allowed", "Requested HTTP method is not allowed for the authenticated user"),
 	GONE 					(410, "Gone", "Resource at this end point is no longer available"),
 	UNSUPPORTED_MEDIA_TYPE 	(415, "Unsupported Media Type", "Incorrect content type was provided as part of the request"),
-	UNPROCESSABLE_ENTITY 	(422, "Unprocessable Entity", "Server cannot process the enitity"),
+	UNPROCESSABLE_ENTITY 	(422, "Unprocessable Entity", "Server cannot process the entity"),
 	TOO_MANY_REQUESTS 		(429, "Too Many Requests", "When a request is rejected due to rate limiting"),
 	INTERNAL_SERVER_ERROR 	(500, "Internal Server Error", "Some exception occured");
 	

@@ -1,4 +1,4 @@
-package models;
+package models.restapi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
