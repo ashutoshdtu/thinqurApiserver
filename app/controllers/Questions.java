@@ -24,6 +24,7 @@ import com.mongodb.util.JSON;
 
 import models.Question;
 import models.UserRef;
+import models.restapi.APIForm;
 import models.restapi.HTTPResponse;
 import models.restapi.HTTPStatus;
 import models.restapi.HTTPStatusCode;
@@ -73,7 +74,6 @@ public class Questions extends Controller {
 			httpStatus.setDeveloperMessage("Not connected to Questions DB");
 		} else {
 			try {
-				//ObjectId questionId = new ObjectId(id);
 				question = questionDAO.get(id);
 				if(question == null) {
 					httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
@@ -81,6 +81,18 @@ public class Questions extends Controller {
 				} else {
 					httpStatus.setCode(HTTPStatusCode.OK);
 					httpStatus.setDeveloperMessage("Question found in DB");
+					try {
+						Form<APIForm> form = Form.form(APIForm.class);
+						if(form.hasErrors()) {
+							throw new Exception("Form has errors");
+						}
+						APIForm apiForm = form.bindFromRequest().get();
+						if(apiForm.userId!=null && commonUtils.isValidUUID(apiForm.userId)) {
+							question.setUserId(apiForm.userId);
+						}
+					} catch(Exception e){
+						
+					}
 				}
 			} catch (Exception e) {
 				httpStatus.setCode(HTTPStatusCode.NOT_FOUND);
@@ -331,7 +343,7 @@ public class Questions extends Controller {
 				try {
 					Question question = questionDAO.get(new ObjectId(questionId));
 					question.setUserId(userRef.getId());
-					if(!question.isAnswerUpvoted){
+					if(!question.isAnswerUpvotedByUser){
 						Query<Question> q = questionDAO.getDatastore().createQuery(Question.class).field("answers._id").equal(new ObjectId(answerId));
 						UpdateOperations<Question> ops = questionDAO.getDatastore().createUpdateOperations(Question.class).disableValidation().add("answers.$.upvotedBy", userRef).enableValidation();
 						questionDAO.update(q, ops);

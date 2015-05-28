@@ -112,22 +112,22 @@ public class Question {
 	public String userId = null;
 
 	@NotSaved
-	public boolean isUpdated = false;
+	public boolean isUpdatedByUser = false;
 	
 	@NotSaved
-	public boolean isFollowed = false;
+	public boolean isFollowedByUser = false;
 	
 	@NotSaved
-	public boolean isQuestionUpvoted = false;
+	public boolean isQuestionUpvotedByUser = false;
 
 	@NotSaved
-	public boolean isQuestionDownvoted = false;
+	public boolean isQuestionDownvotedByUser = false;
 
 	@NotSaved
-	public boolean isAnswerUpvoted = false;
+	public boolean isAnswerUpvotedByUser = false;
 
 	@NotSaved
-	public String answerUpvoted = null;
+	public String answerUpvotedByUser = null;
 	
 	
 	
@@ -210,21 +210,21 @@ public class Question {
 		calculateDownvotedByMap();
 		calculateAnsweredByMap();
 		if(updatedByMap.containsKey(userId)) {
-			isUpdated = true;
+			isUpdatedByUser = true;
 		}
 		if(followedByMap.containsKey(userId)) {
-			isFollowed = true;
+			isFollowedByUser = true;
 		}
 		if(upvotedByMap.containsKey(userId)) {
-			isQuestionUpvoted = true;
+			isQuestionUpvotedByUser = true;
 		}
 		if(downvotedByMap.containsKey(userId)) {
-			isQuestionDownvoted = true;
+			isQuestionDownvotedByUser = true;
 		}
 		for(String answerId: answeredByMap.keySet()) {
 			if(answeredByMap.get(answerId).containsKey(userId)){
-				isAnswerUpvoted = true;
-				answerUpvoted = answerId;
+				isAnswerUpvotedByUser = true;
+				answerUpvotedByUser = answerId;
 			}
 		}
 	}
