@@ -13,9 +13,7 @@ import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -31,14 +29,12 @@ import models.restapi.HTTPStatusCode;
 import models.restapi.Metadata;
 import models.restapi.MetadataGetCollection;
 import models.restapi.QuestionGetForm;
-import play.Logger;
-import play.Play;
 import play.data.Form;
 import play.libs.Json;
 //import play.modules.spring.Spring;
 import play.mvc.Controller;
 import play.mvc.Result;
-//import scala.annotation.meta.getter;
+
 import services.QuestionDAO;
 import utils.DAOUtils;
 import utils.commonUtils;

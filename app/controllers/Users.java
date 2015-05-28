@@ -1,12 +1,9 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import models.LinkedAccount;
-import models.Question;
 import models.User;
 import models.restapi.HTTPResponse;
 import models.restapi.HTTPStatus;
@@ -14,7 +11,6 @@ import models.restapi.HTTPStatusCode;
 import models.restapi.Metadata;
 import models.restapi.MetadataGetCollection;
 import models.restapi.MetadataPostUser;
-import models.restapi.QuestionGetForm;
 import models.restapi.UserGetForm;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -33,7 +29,6 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.UserDAO;
-import utils.commonUtils;
 import utils.DAOUtils;
 
 public class Users extends Controller {

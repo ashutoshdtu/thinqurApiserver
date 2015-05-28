@@ -4,7 +4,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,21 +12,13 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Index;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.NotSaved;
 import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import play.api.libs.iteratee.internal;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
-import utils.ObjectID_Serializer;
-
 import org.joda.time.*;
 
 /** class to store Question

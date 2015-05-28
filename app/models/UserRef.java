@@ -5,21 +5,15 @@ package models;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.NotSaved;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
 import services.UserDAO;
 import utils.DAOUtils;
-import utils.ObjectID_Serializer;
 import utils.commonUtils;
 
 /** Reference to user objects. Contains only very important details of user.
@@ -88,18 +82,4 @@ public class UserRef {
 		super();
 	}
 	
-	
-	/*
-	//@JsonSerialize(using=ObjectID_Serializer.class) 
-    public ObjectId getId() {
-        if(id == null){
-            return id = new ObjectId();
-        }
-        return id;
-    }
-    
-    //@JsonSerialize(using=ObjectID_Serializer.class) 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }*/
 }
