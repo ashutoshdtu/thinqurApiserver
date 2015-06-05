@@ -31,7 +31,7 @@ PUT 	/v1/questions 				controllers.Questions.postQuestion()
 # answer upvote
 POST 	/v1/questions/:questionId/answers/:answerId/upvotedBy 				controllers.Questions.postAnswerUpvote(questionId, answerId)
 # question upvote/downvote/follow
-POST 	/v1/questions/:questionId/:operation 								controllers.Questions.postQuestionUserUpdate(questionId, operation)
+POST 	/v1/questions/:questionId/:operation 								controllers.Questions.postQuestionUserUpdates(questionId, operation)
 # question upvote
 #POST 	/v1/questions/:questionId/upvotedBy 								controllers.Questions.postQuestionUpvote(questionId)
 # question downvote
