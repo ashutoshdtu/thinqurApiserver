@@ -9,7 +9,7 @@ GET     /                           controllers.Application.index()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
-
+##################################################################################
 ## QUESTION API v1
 
 # get a Question
@@ -26,9 +26,20 @@ POST 	/v1/questions 				controllers.Questions.postQuestion()
 # put into Questions collection
 PUT 	/v1/questions 				controllers.Questions.postQuestion()
 
+## Special Question APIs
+
 # answer upvote
 POST 	/v1/questions/:questionId/answers/:answerId/upvotedBy 				controllers.Questions.postAnswerUpvote(questionId, answerId)
+# question upvote/downvote/follow
+POST 	/v1/questions/:questionId/:operation 								controllers.Questions.postQuestionUserUpdate(questionId, operation)
+# question upvote
+#POST 	/v1/questions/:questionId/upvotedBy 								controllers.Questions.postQuestionUpvote(questionId)
+# question downvote
+#POST 	/v1/questions/:questionId/downvotedBy 								controllers.Questions.postQuestionDownvote(questionId)
+# question follow
+#POST 	/v1/questions/:questionId/followedBy 								controllers.Questions.postQuestionFollow(questionId)
 
+##################################################################################
 ## USER API
 
 # get a User
@@ -47,3 +58,5 @@ POST 	/v1/users 					controllers.Users.postUsers()
 PUT 	/v1/users 					controllers.Users.putUsers()
 # delete from Users collection
 # DELETE /v1/users 					controllers.Users.deleteUsers()
+
+##################################################################################

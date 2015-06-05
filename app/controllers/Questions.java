@@ -34,7 +34,6 @@ import play.libs.Json;
 //import play.modules.spring.Spring;
 import play.mvc.Controller;
 import play.mvc.Result;
-
 import services.QuestionDAO;
 import utils.DAOUtils;
 import utils.commonUtils;
@@ -343,7 +342,6 @@ public class Questions extends Controller {
 						Query<Question> q = questionDAO.getDatastore().createQuery(Question.class).field("answers._id").equal(new ObjectId(answerId));
 						UpdateOperations<Question> ops = questionDAO.getDatastore().createUpdateOperations(Question.class).disableValidation().add("answers.$.upvotedBy", userRef).enableValidation();
 						questionDAO.update(q, ops);
-						//questionDAO.save(question, WriteConcern.SAFE);
 						question = questionDAO.get(new ObjectId(questionId));
 						if(question == null) {
 							httpStatus.setCode(HTTPStatusCode.GONE);
@@ -366,7 +364,7 @@ public class Questions extends Controller {
 			}
 		} catch (Exception e1) {
 			httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
-			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.Question.java file");
+			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.UserRef.java file");
 			debugInfo = ExceptionUtils.getFullStackTrace(e1.fillInStackTrace());
 			e1.printStackTrace();
 		}
@@ -380,6 +378,91 @@ public class Questions extends Controller {
 		return status(httpStatus.code, Json.toJson(httpResponse)); 
 	}
 	
+	// POST 	/v1/questions/<id>/upvotedBy 				controllers.Questions.postQuestionUserUpdates()
+	// POST 	/v1/questions/<id>/downvotedBy 				controllers.Questions.postQuestionUserUpdates()
+	// POST 	/v1/questions/<id>/followedBy 				controllers.Questions.postQuestionUserUpdates()
+	public static Result postQuestionUserUpdates(String questionId, String operation) {
+		// 1. Start stopwatch
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+
+		// 2. Initialize http response objects
+		HTTPStatus httpStatus = new HTTPStatus();
+		UserRef userRef = null;
+		Metadata metadata = new Metadata();
+		String debugInfo = null;
+
+		// 3. Calculate response
+		Form<UserRef> form;
+		try {
+			form = Form.form(UserRef.class);
+			if(form.hasErrors()) {
+				throw new Exception("Form has errors");
+			}
+			userRef = form.bindFromRequest().get();
+
+			if(questionDAO==null) {
+				// if not connected to Questions DB
+				httpStatus.setCode(HTTPStatusCode.GONE);
+				httpStatus.setDeveloperMessage("Not connected to Questions DB");
+			} else {
+				try {
+					Question question = questionDAO.get(new ObjectId(questionId));
+					question.setUserId(userRef.getId());
+					if( isValidOperation(question, operation) ){
+						Query<Question> q = questionDAO.getDatastore().createQuery(Question.class).field("_id").equal(new ObjectId(questionId));
+						UpdateOperations<Question> ops = questionDAO.getDatastore().createUpdateOperations(Question.class).disableValidation().add(operation, userRef).enableValidation();
+						questionDAO.update(q, ops);
+						question = questionDAO.get(new ObjectId(questionId));
+						if(question == null) {
+							httpStatus.setCode(HTTPStatusCode.GONE);
+							httpStatus.setDeveloperMessage("Question was written to DB but was not returned successfully");
+						} else {
+							httpStatus.setCode(HTTPStatusCode.RESOURCE_CREATED);
+							httpStatus.setDeveloperMessage("Question was successfully written to DB");
+						}
+					} else {
+						httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+						httpStatus.setDeveloperMessage("Invalid Operation");
+					}
+				} catch (Exception e) {
+					userRef = null;
+					httpStatus.setCode(HTTPStatusCode.INTERNAL_SERVER_ERROR);
+					httpStatus.setDeveloperMessage("Exception occured while writing to Question DB");
+					debugInfo = ExceptionUtils.getFullStackTrace(e.fillInStackTrace());
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e1) {
+			httpStatus.setCode(HTTPStatusCode.BAD_REQUEST);
+			httpStatus.setDeveloperMessage("Error in submitted query!! Check models.UserRef.java file");
+			debugInfo = ExceptionUtils.getFullStackTrace(e1.fillInStackTrace());
+			e1.printStackTrace();
+		}
+
+		// 4. Stop stopwatch
+		stopWatch.stop();
+
+		// 5. Calculate final HTTP response
+		metadata.setQTime(stopWatch.getTime());
+		HTTPResponse<UserRef, Metadata, String> httpResponse = new HTTPResponse<UserRef, Metadata, String>(httpStatus, metadata, userRef, debugInfo);
+		return status(httpStatus.code, Json.toJson(httpResponse)); 
+	}
+
+	/**
+	 * @param question
+	 * @param operation 
+	 * @return
+	 */
+	private static boolean isValidOperation(Question question, String operation) {
+		if(operation.equals("upvotedBy") || operation.equals("downvotedBy")) {
+			return !(question.isQuestionUpvotedByUser || question.isQuestionDownvotedByUser);
+		} else if(operation.equals("followedBy")) {
+			return !question.isFollowedByUser;
+		}
+		return false;
+	}
+
 	/**
 	 * @param id
 	 * @return
