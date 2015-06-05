@@ -52,6 +52,9 @@ public class Answer {
 	@NotSaved
 	Integer totalUpvotes=0;
 	
+	@NotSaved
+	public boolean isUpvotedByUser = false;
+	
 	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
 	
 	public void set_id(ObjectId _id) {

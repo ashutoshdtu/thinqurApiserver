@@ -216,6 +216,11 @@ public class Question {
 			if(answeredByMap.get(answerId).containsKey(userId)){
 				isAnswerUpvotedByUser = true;
 				answerUpvotedByUser = answerId;
+				for(Answer ans:answers) {
+					if(ans.id.equals(answerId)) {
+						ans.isUpvotedByUser = true;
+					}
+				}
 			}
 		}
 	}
