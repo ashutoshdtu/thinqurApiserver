@@ -9,10 +9,13 @@ GET     /                           controllers.Application.index()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
-# Question API v1
+##################################################################################
+## QUESTION API v1
 
 # get a Question
 GET     /v1/questions/:id 			controllers.Questions.getQuestionById(id: String)
+# put a question
+#PUT     /v1/questions/:id 			controllers.Questions.putQuestionById(id: String)
 # delete a Question
 DELETE  /v1/questions/:id 			controllers.Questions.deleteQuestionById(id: String)
 
@@ -23,15 +26,37 @@ POST 	/v1/questions 				controllers.Questions.postQuestion()
 # put into Questions collection
 PUT 	/v1/questions 				controllers.Questions.postQuestion()
 
-## User API
+## Special Question APIs
+
+# answer upvote
+POST 	/v1/questions/:questionId/answers/:answerId/upvotedBy 				controllers.Questions.postAnswerUpvote(questionId, answerId)
+# question upvote/downvote/follow
+POST 	/v1/questions/:questionId/:operation 								controllers.Questions.postQuestionUserUpdates(questionId, operation)
+# question upvote
+#POST 	/v1/questions/:questionId/upvotedBy 								controllers.Questions.postQuestionUpvote(questionId)
+# question downvote
+#POST 	/v1/questions/:questionId/downvotedBy 								controllers.Questions.postQuestionDownvote(questionId)
+# question follow
+#POST 	/v1/questions/:questionId/followedBy 								controllers.Questions.postQuestionFollow(questionId)
+
+##################################################################################
+## USER API
 
 # get a User
 GET     /v1/users/:id 			    controllers.Users.getUserById(id: String)
 GET     /v1/users/email/:email		controllers.Users.getUserByEmail(email: String)
-GET 	/v1/users 					controllers.Users.getUsers()
-# post into Users collection
-POST 	/v1/users 					controllers.Users.postUser()
+# put a User
+#PUT    /v1/users/:id 				controllers.Users.putUserById(id: String)
 # delete a User
 DELETE  /v1/users/:id 				controllers.Users.deleteUserById(id: String)
+
+# get from Users collection
+GET 	/v1/users 					controllers.Users.getUsers()
+# post into Users collection
+POST 	/v1/users 					controllers.Users.postUsers()
 # put into Users collection
-PUT 	/v1/users 					controllers.Users.putUser()
+PUT 	/v1/users 					controllers.Users.putUsers()
+# delete from Users collection
+# DELETE /v1/users 					controllers.Users.deleteUsers()
+
+##################################################################################

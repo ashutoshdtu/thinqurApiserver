@@ -6,6 +6,8 @@ package utils;
 import java.util.Date;
 import java.util.UUID;
 
+import org.bson.types.ObjectId;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -26,6 +28,15 @@ public class commonUtils {
 			return null;
 		}
 		return uuid;
+	}
+	
+	public static boolean isValidUUID(String uuid) {
+		try {
+			ObjectId _uuid = new ObjectId(uuid);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	 /*

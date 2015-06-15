@@ -1,9 +1,9 @@
-package models;
+package models.restapi;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class QuestionGetForm {
+public class QuestionGetForm extends APIForm{
 	
 	public String method = "generic";
 	

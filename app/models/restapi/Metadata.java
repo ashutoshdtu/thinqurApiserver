@@ -1,7 +1,7 @@
 /**
  * 
  */
-package models;
+package models.restapi;
 
 
 /**Interface to store response format for metadata of a route
