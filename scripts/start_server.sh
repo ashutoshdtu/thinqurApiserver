@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Starting apiserver"
 
-cmd="cd .."
+cmd="cd /home/apiserver/"
 echo $cmd
 $cmd
 

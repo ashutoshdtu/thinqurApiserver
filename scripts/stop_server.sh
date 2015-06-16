@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Stopping apiserver"
 
-cmd="cd .."
+cmd="cd /home/apiserver"
 echo $cmd
 $cmd
 
@@ -9,6 +9,6 @@ cmd="ls"
 echo $cmd
 $cmd
 
-startcmd="./activator stop"
-echo $startcmd
-${startcmd}
+stopcmd="./activator stop"
+echo $stopcmd
+${stopcmd}
