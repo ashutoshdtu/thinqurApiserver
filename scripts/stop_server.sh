@@ -1,7 +1,8 @@
 #!/bin/bash
 echo "Stopping apiserver"
 
-cmd="cd /home/apiserver"
+cmd="cd .."
+#cmd="cd /home/apiserver"
 echo $cmd
 $cmd
 

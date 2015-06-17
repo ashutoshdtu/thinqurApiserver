@@ -1,13 +1,14 @@
 #!/bin/bash
 echo "Starting apiserver"
 
-cmd="cd /home/apiserver/"
+cmd="cd .."
+#cmd="cd /home/apiserver/"
 echo $cmd
 $cmd
 
 cleancmd="./activator clean"
 echo $cleancmd
-${cleancmd} &
+${cleancmd}
 
 startcmd="./activator start"
 echo $startcmd
