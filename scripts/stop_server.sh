@@ -2,14 +2,7 @@
 echo "Stopping apiserver"
 
 #cmd="cd .."
-cmd="cd /home/apiserver"
+PORT_NUMBER=1234
+cmd="lsof -i tcp:${PORT_NUMBER} | awk 'NR!=1 {print $2}' | xargs kill "
 echo $cmd
 $cmd
-
-cmd="ls"
-echo $cmd
-$cmd
-
-stopcmd="./activator stop"
-echo $stopcmd
-${stopcmd}
