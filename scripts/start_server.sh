@@ -4,7 +4,7 @@ echo "Starting apiserver"
 #cmd="cd .."
 cmd="cd /home/apiserver/"
 echo $cmd
-$cmd
+${cmd}
 
 cleancmd="./activator clean"
 echo $cleancmd
