@@ -301,7 +301,6 @@ public class Users extends Controller {
 						metadata.setNewRecord(false);
 						user.set_id(existingUser.get_id());
 						if (compareUserList(existingUser.linkedAccounts, user.linkedAccounts)) {
-							//System.out.print("asgagdsfhgsdf");
 							existingUser.linkedAccounts
 									.addAll(user.linkedAccounts);
 						}

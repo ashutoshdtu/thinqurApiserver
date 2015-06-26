@@ -1,33 +1,26 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.NotSaved;
 import org.mongodb.morphia.annotations.PrePersist;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
-import utils.ObjectID_Serializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * @author ashutosh
+ * @author sanket
  *
  */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Answer {
+public class Comment {
 	
 	@JsonIgnore
 	@Id
@@ -38,19 +31,17 @@ public class Answer {
 	public String createdAt = new DateTime( DateTimeZone.UTC ).toString();
 	
 	@Required
-	@MaxLength(50)
-	public String statement;
+	public String questionId = null;
 	
-	public String imageURL;
+	@Required
+	@MaxLength(200)
+	public String comment = null;
 	
+	@Required
 	@Embedded
-	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
-	
-	@NotSaved
-	Integer totalUpvotes=0;
-	
-	@NotSaved
-	public boolean isUpvotedByUser = false;
+	public UserRef commentedBy = null;
+		
+	public boolean isActive = true;
 	
 	@PrePersist void prePersist() {lastUpdatedAt = new DateTime( DateTimeZone.UTC ).toString();}
 	
@@ -71,22 +62,4 @@ public class Answer {
 	public String getId() {
 		return id;
 	}
-	
-	public Integer getTotalUpvotes() {
-		return upvotedBy.size();
-	}
-	
-	/*
-	//@JsonSerialize(using=ObjectID_Serializer.class) 
-    public ObjectId getId() {
-        if(id == null){
-            return id = new ObjectId();
-        }
-        return id;
-    }
-    
-    //@JsonSerialize(using=ObjectID_Serializer.class) 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }*/
 }
