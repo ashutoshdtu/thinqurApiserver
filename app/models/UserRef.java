@@ -3,12 +3,19 @@
  */
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.NotSaved;
+import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
@@ -41,6 +48,13 @@ public class UserRef {
 	String email=null;
 	
 	String profileImage;
+	public String lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
+	public String createdAt = new DateTime(DateTimeZone.UTC).toString();
+
+	@PrePersist
+	void prePersist() {
+		lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
+	}
 	
 	public void setId(String id) throws Exception {
 		this.id = id;

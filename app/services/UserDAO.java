@@ -31,7 +31,11 @@ public class UserDAO extends BasicDAO<User, ObjectId> {
 
 	public User getByEmail(String email) {
 		Datastore db = DAOUtils.userMongo.datastore;
-		Query<User> q = db.createQuery(User.class).field("email").equal(email);
+		Query<User> q = db.createQuery(User.class);
+		q.or(
+				q.criteria("emailList").equal(email),
+				q.criteria("email").equal(email)
+		);
 		return q.get();
 	}
 }

@@ -16,4 +16,6 @@ public class LinkedAccount {
 	
 	public String accessToken = null;
 
+	public String refreshToken = null;
+
 }

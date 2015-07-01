@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * class to store User
+ * Class to store User
  * 
  * @author sanket
  * 
@@ -45,6 +45,7 @@ public class User {
 	public String profileImage = null;
 	@Required
 	public String email;
+	public List<String> emailList;
 	public boolean isVerified = false;
 	public boolean isActive = true;
 	public String timezone = null;

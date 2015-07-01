@@ -1,4 +1,6 @@
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import play.Application;
 import play.GlobalSettings;
@@ -13,21 +15,24 @@ import utils.DAOUtils;
  *
  */
 public class Global extends GlobalSettings {
+	Date dNow = new Date();
+	SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public void onStart(Application app) {
-		Logger.info("Application started!");
+		Logger.info(ft.format(dNow) + " Application started!");
 		DAOUtils.connect();
 	}
 
 	public void onStop(Application app) {
-		Logger.info("Appplication stopped!");
+		Logger.info(ft.format(dNow) + " Appplication stopped!");
 		DAOUtils.disconnect();
 	}
 
 	@SuppressWarnings("rawtypes")
 	public Action onRequest(Request request, Method method) {
-		Logger.info("method=" + request.method() + "   uri=" + request.uri()
-				+ "   remote-address=" + request.remoteAddress());
+		Logger.info(ft.format(dNow) + " method=" + request.method() + "   uri="
+				+ request.uri() + "   remote-address="
+				+ request.remoteAddress());
 		return super.onRequest(request, method);
 	}
 }
