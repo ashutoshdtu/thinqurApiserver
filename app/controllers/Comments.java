@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Comment;
+import models.Question;
 import models.User;
 import models.restapi.CommentGetForm;
 import models.restapi.HTTPResponse;
@@ -25,6 +26,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import services.CommentDAO;
+import services.QuestionDAO;
 import utils.DAOUtils;
 import utils.commonUtils;
 
@@ -43,7 +45,7 @@ import com.mongodb.util.JSON;
  */
 public class Comments extends Controller {
 	static CommentDAO commentDAO = DAOUtils.commentDAO;
-
+	static QuestionDAO questionDAO = DAOUtils.questionDAO;
 	// POST /v1/comments controllers.Comments.postComment()
 	// PUT  /v1/comments controllers.Comments.postComment()
 	public static Result postComment() {
@@ -56,6 +58,7 @@ public class Comments extends Controller {
 		Comment comment = null;
 		Metadata metadata = new Metadata();
 		String debugInfo = null;
+		Question question = null;
 
 		// 3. Calculate response
 		Form<Comment> form;
@@ -72,6 +75,9 @@ public class Comments extends Controller {
 			} else {
 				try {
 					commentDAO.save(comment, WriteConcern.SAFE);
+					question = questionDAO.get(comment.questionId);
+					question.totalComments++;
+					questionDAO.save(question, WriteConcern.SAFE);
 					comment = commentDAO.get(comment.get_id());
 					if (comment == null) {
 						httpStatus.setCode(HTTPStatusCode.GONE);

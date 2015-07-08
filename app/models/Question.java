@@ -80,6 +80,8 @@ public class Question {
 	
 	@Embedded
 	public List<UserRef> downvotedBy = new ArrayList<UserRef>();
+
+	public int totalComments = 0;
 	
 	@NotSaved
 	int totalUpdates; 
