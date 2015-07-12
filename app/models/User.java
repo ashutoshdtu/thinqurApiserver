@@ -45,10 +45,11 @@ public class User {
 	public String profileImage = null;
 	@Required
 	public String email;
-	public List<String> emailList;
+	public List<String> emailList = new ArrayList<String>();
 	public boolean isVerified = false;
 	public boolean isActive = true;
 	public String timezone = null;
+	public int userRole = 10; //default - 10 for normal user, max. - 100 for admin, min. - 0 for blacklisted user 
 	public String lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
 	public String createdAt = new DateTime(DateTimeZone.UTC).toString();
 
