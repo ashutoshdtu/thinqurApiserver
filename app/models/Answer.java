@@ -43,6 +43,7 @@ public class Answer {
 	
 	public String imageURL;
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	

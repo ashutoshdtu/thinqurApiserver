@@ -69,15 +69,19 @@ public class Question {
 	@Embedded
 	public UserRef createdBy = null;
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> updatedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> followedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> downvotedBy = new ArrayList<UserRef>();
 
