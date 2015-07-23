@@ -44,8 +44,6 @@ public class UserRef {
 	@MaxLength(50)
 	String displayName=null;
 	
-	@Email
-	String email=null;
 	
 	String profileImage;
 	public String lastUpdatedAt = new DateTime(DateTimeZone.UTC).toString();
@@ -62,7 +60,6 @@ public class UserRef {
 			User user = userDAO.get(new ObjectId(id));
 			this.name = user.firstName + " " + user.lastName;
 			this.displayName = user.displayName;
-			this.email = user.email;
 			this.profileImage = user.profileImage;
 		}
 	}
@@ -77,10 +74,6 @@ public class UserRef {
 
 	public String getDisplayName() {
 		return displayName;
-	}
-
-	public String getEmail() {
-		return email;
 	}
 
 	public String getProfileImage() {

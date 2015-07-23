@@ -17,8 +17,11 @@ import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import play.data.validation.Constraints.MaxLength;
 import play.data.validation.Constraints.Required;
+
 import org.joda.time.*;
 
 /** class to store Question
@@ -69,17 +72,62 @@ public class Question {
 	@Embedded
 	public UserRef createdBy = null;
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> updatedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> followedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> downvotedBy = new ArrayList<UserRef>();
+	
+	@JsonIgnore
+	public List<UserRef> getUpdatedBy() {
+		return updatedBy;
+	}
+
+	@JsonProperty
+	public void setUpdatedBy(List<UserRef> updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	@JsonIgnore
+	public List<UserRef> getFollowedBy() {
+		return followedBy;
+	}
+
+	@JsonProperty
+	public void setFollowedBy(List<UserRef> followedBy) {
+		this.followedBy = followedBy;
+	}
+
+	@JsonIgnore
+	public List<UserRef> getUpvotedBy() {
+		return upvotedBy;
+	}
+
+	@JsonProperty
+	public void setUpvotedBy(List<UserRef> upvotedBy) {
+		this.upvotedBy = upvotedBy;
+	}
+
+	@JsonIgnore
+	public List<UserRef> getDownvotedBy() {
+		return downvotedBy;
+	}
+
+	@JsonProperty
+	public void setDownvotedBy(List<UserRef> downvotedBy) {
+		this.downvotedBy = downvotedBy;
+	}
+
 
 	public int totalComments = 0;
 	
@@ -95,8 +143,11 @@ public class Question {
 	@NotSaved
 	int totalDownvotes;
 	
+	//@NotSaved
+	int totalAnswerUpvotes;
 	
-	
+	public long timeDecayFactor = System.currentTimeMillis()/(2*100*1000*1000);
+	public long score = System.currentTimeMillis()/(2*100*1000*1000) * 100;
 	
 	/*
 	 * User specific information
@@ -191,6 +242,16 @@ public class Question {
 	
 	public int getTotalDownvotes() {
 		return downvotedBy != null ? downvotedBy.size() : 0;
+	}
+	
+	public void setTotalAnswerUpvotes(int totalAnswerUpvotes) {}
+	
+	public int getTotalAnswerUpvotes() {
+		totalAnswerUpvotes = 0;
+		for(Answer ans: answers) {
+			totalAnswerUpvotes += ans.getTotalUpvotes();
+		}
+		return totalAnswerUpvotes;
 	}
 	
 	public void setTotalDownvotes(int totalDownvotes) {}

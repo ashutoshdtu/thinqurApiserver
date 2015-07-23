@@ -19,6 +19,9 @@ import models.restapi.UserGetForm;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.StopWatch;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 
 import play.data.Form;
 import play.libs.Json;
@@ -75,9 +78,13 @@ public class Comments extends Controller {
 			} else {
 				try {
 					commentDAO.save(comment, WriteConcern.SAFE);
-					question = questionDAO.get(comment.questionId);
+					Query<Question> q = questionDAO.getDatastore().createQuery(Question.class).field("_id").equal(new ObjectId(comment.questionId));
+					UpdateOperations<Question> ops;
+					ops = questionDAO.getDatastore().createUpdateOperations(Question.class).inc("totalComments");
+					questionDAO.update(q, ops);
+					/*question = questionDAO.get(comment.questionId);
 					question.totalComments++;
-					questionDAO.save(question, WriteConcern.SAFE);
+					questionDAO.save(question, WriteConcern.SAFE);*/
 					comment = commentDAO.get(comment.get_id());
 					if (comment == null) {
 						httpStatus.setCode(HTTPStatusCode.GONE);

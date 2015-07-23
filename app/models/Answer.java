@@ -15,6 +15,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import play.data.validation.Constraints.MaxLength;
@@ -43,11 +44,22 @@ public class Answer {
 	
 	public String imageURL;
 	
+	@JsonIgnore
 	@Embedded
 	public List<UserRef> upvotedBy = new ArrayList<UserRef>();
 	
-	@NotSaved
-	Integer totalUpvotes=0;
+	@JsonIgnore
+	public List<UserRef> getUpvotedBy() {
+		return upvotedBy;
+	}
+
+	@JsonProperty
+	public void setUpvotedBy(List<UserRef> upvotedBy) {
+		this.upvotedBy = upvotedBy;
+	}
+
+	//@NotSaved
+	public Integer totalUpvotes=0;
 	
 	@NotSaved
 	public boolean isUpvotedByUser = false;

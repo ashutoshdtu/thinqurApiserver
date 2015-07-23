@@ -339,9 +339,18 @@ public class Questions extends Controller {
 					Question question = questionDAO.get(new ObjectId(questionId));
 					question.setUserId(userRef.getId());
 					if(!question.isAnswerUpvotedByUser){
+						question.timeDecayFactor = System.currentTimeMillis()/(2*100*1000*1000);
+						question.score = question.timeDecayFactor * 100 + question.getTotalAnswerUpvotes() + 1;
 						Query<Question> q = questionDAO.getDatastore().createQuery(Question.class).field("answers._id").equal(new ObjectId(answerId));
-						UpdateOperations<Question> ops = questionDAO.getDatastore().createUpdateOperations(Question.class).disableValidation().add("answers.$.upvotedBy", userRef).enableValidation();
+						UpdateOperations<Question> ops = questionDAO.getDatastore().createUpdateOperations(Question.class)
+								.disableValidation()
+								.add("answers.$.upvotedBy", userRef)
+								.set("totalAnswerUpvotes",question.getTotalAnswerUpvotes()+1)
+								.set("timeDecayFactor", question.timeDecayFactor)
+								.set("score", question.score)
+								.enableValidation();
 						questionDAO.update(q, ops);
+						
 						question = questionDAO.get(new ObjectId(questionId));
 						if(question == null) {
 							httpStatus.setCode(HTTPStatusCode.GONE);
