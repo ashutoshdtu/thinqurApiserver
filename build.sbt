@@ -4,7 +4,17 @@ version := "0.1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
+maintainer in Linux := "Ashutosh Mishra <ashutosh@podkart.com>"
+
+packageSummary in Linux := "Splitr API server"
+
+packageDescription := "Splitr API server"
+
 scalaVersion := "2.11.1"
+
+dockerExposedPorts in Docker := Seq(9000)
+ 
+dockerRepository := Some("kosync")
 
 libraryDependencies ++= Seq(
   "be.objectify"  %% "deadbolt-java"     % "2.3.0-RC1",
