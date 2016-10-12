@@ -12,11 +12,19 @@ matrix:
 build:                                                  
 
   pre_ci: 
-    - docker login -u="ashutoshpodkart" -p="ashutosh12#"
     - ./activator clean
 
   ci:
     - ./activator test
     - ./activator docker:stage
-  on_success:
+  
+  push:
     - ./activator docker:publish
+
+integrations:
+  hub:
+    - integrationName: my_docker
+      type: docker
+      branches:
+        only:
+          - master
