@@ -20,10 +20,3 @@ build:
     - ./activator docker:stage
   on_success:
     - ./activator docker:publish
-  on_failure:
-    - #command1
-    - #command2
-  cache:
-  cache_dir_list:
-    - #dir1
-  push:
