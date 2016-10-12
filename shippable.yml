@@ -7,9 +7,6 @@ matrix:
 
 build:                                                  
 
-  pre_ci: 
-    - ./activator clean
-
   ci:
     - ./activator test
     - ./activator docker:stage
