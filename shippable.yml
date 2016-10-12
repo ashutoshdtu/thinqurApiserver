@@ -3,10 +3,6 @@ language: java
 jdk:                                      
   - openjdk7                  
 
-env:                                                
-  - #env1=foo                           
-  - #env2=bar
-
 matrix:                                                                 
 
 build:                                                  
