@@ -8,8 +8,7 @@ matrix:
 build:                                                  
 
   ci:
-    - ./activator test
-    - ./activator docker:stage
+    - ./activator clean docker:stage
   
   push:
     - ./activator docker:publish
