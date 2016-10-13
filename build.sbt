@@ -1,14 +1,13 @@
+import NativePackagerKeys._
+import com.typesafe.sbt.SbtNativePackager._
+
 name := """apiserver"""
 
 version := "0.1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, JavaServerAppPackaging)
+lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
-maintainer in Linux := "Ashutosh Mishra <ashutosh@podkart.com>"
-
-packageSummary in Linux := "Splitr API server"
-
-packageDescription := "Splitr API server"
+maintainer := "Ashutosh Mishra <ashutosh@podkart.com>"
 
 scalaVersion := "2.11.1"
 
