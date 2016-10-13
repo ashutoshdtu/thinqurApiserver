@@ -13,7 +13,7 @@ scalaVersion := "2.11.1"
 
 dockerExposedPorts in Docker := Seq(9000)
  
-dockerRepository := Some("kosync")
+dockerRepository := Some("ashutoshpodkart")
 
 libraryDependencies ++= Seq(
   "be.objectify"  %% "deadbolt-java"     % "2.3.0-RC1",
