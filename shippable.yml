@@ -8,10 +8,7 @@ matrix:
 build:                                                  
 
   ci:
-    - ./activator clean docker:stage
-  
-  push:
-    - ./activator docker:publish
+    - ./activator clean docker:stage docker:publish
 
 integrations:
   hub:
