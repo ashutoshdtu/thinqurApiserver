@@ -2,7 +2,7 @@ name := """apiserver"""
 
 version := "0.1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, DebianPlugin, JavaServerAppPackaging)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, JavaServerAppPackaging)
 
 maintainer in Linux := "Ashutosh Mishra <ashutosh@podkart.com>"
 
