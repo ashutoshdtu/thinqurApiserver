@@ -2,7 +2,9 @@ name := """apiserver"""
 
 version := "0.1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, DebianPlugin, JavaServerAppPackaging)
+
+maintainer in Linux := "Ashutosh Mishra <ashutosh@podkart.com>"
 
 packageSummary in Linux := "Splitr API server"
 
