@@ -4,11 +4,11 @@ API Server
 Deploy
 ---------------
 
-To deploy apiserver do a git clone and run 
+To deploy api server, do a git clone and run 
 
 ./activator start
 
-This will download all the dependencies and start apiserver on port 9000
+This will download and install all the dependencies and will start apiserver on port 9000
 
 ---------------
 For more details see this page: https://github.com/ashutoshdtu/thinqurApiserver/wiki
